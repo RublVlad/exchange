@@ -89,7 +89,7 @@ public class ImageController extends HttpServlet implements Servlet {
         long roleId = (long) session.getAttribute(SessionAttributesNameProvider.ID);
 
         Part filePart = request.getPart(PageAttributesNameProvider.AVATAR);
-        if (filePart != null){
+        if (filePart != null && filePart.getSize() != 0){
             String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
 
             ImageBean imageBean = new ImageBean();

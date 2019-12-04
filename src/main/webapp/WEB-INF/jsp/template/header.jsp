@@ -23,7 +23,7 @@
 
         <!-- Links -->
         <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
+          <li class="nav-item">
             <a class="nav-link" href="<c:url value="/jsp/profile.jsp" />">Profile</a>
           </li>
           <li class="nav-item">

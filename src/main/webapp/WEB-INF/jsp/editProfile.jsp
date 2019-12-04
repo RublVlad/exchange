@@ -31,7 +31,7 @@
             <div class="row d-flex justify-content-center"> 
             
             <!-- Default form register -->
-            <form class="text-center border border-light p-5" method="POST" action="controller" enctype="multipart/form-data">
+            <form class="text-center border border-light p-5" method="POST" action="<c:url value="/controller" />" enctype="multipart/form-data">
                 <input type="hidden" name="command" value="${pageScope.command}" />
                 <p class="h4 mb-4">Update profile</p>
     

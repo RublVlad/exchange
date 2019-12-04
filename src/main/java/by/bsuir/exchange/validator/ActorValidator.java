@@ -10,10 +10,10 @@ public class ActorValidator {
 
     public static boolean validate(ActorBean actorBean){
         boolean isValid = true;
-         if (actorBean.getName() != null){
+         if (actorBean.getName() != null && !actorBean.getName().isEmpty()){
             isValid &= validateName(actorBean);
         }
-        if (actorBean.getSurname() != null){
+        if (actorBean.getSurname() != null && !actorBean.getSurname().isEmpty()){
             isValid &= validateSurname(actorBean);
         }
         return isValid;
