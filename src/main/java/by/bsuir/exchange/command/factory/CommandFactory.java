@@ -4,7 +4,6 @@ import by.bsuir.exchange.chain.ChainFactory;
 import by.bsuir.exchange.chain.CommandHandler;
 import by.bsuir.exchange.command.Command;
 import by.bsuir.exchange.command.CommandEnum;
-import by.bsuir.exchange.command.exception.CommandInitializationException;
 import by.bsuir.exchange.provider.ConfigurationProvider;
 import by.bsuir.exchange.provider.PageAttributesNameProvider;
 import by.bsuir.exchange.provider.RequestAttributesNameProvider;
@@ -18,23 +17,34 @@ import static by.bsuir.exchange.provider.PageAttributesNameProvider.COMMAND;
 
 public class CommandFactory {
     private static final int N_COMMANDS = 16;
+    private static final String FEED_BACK_TEMPLATE = "/controller?command=%s";
 
     private static Map<String, String> pageConstants;
 
     private static String[] successPages;
     private static String[] failurePages;
+    private static CommandEnum[] feedBacks;
 
     static {
         pageConstants = new HashMap<>();
         pageConstants.put("login", LOGIN_PAGE_PATH);
         initSuccessPages();
+        initFeedBacks();
+    }
+
+    private static void initFeedBacks(){
+        feedBacks = new CommandEnum[N_COMMANDS];
+
+        feedBacks[CommandEnum.LOGIN.ordinal()] = CommandEnum.GET_PROFILE;
+        feedBacks[CommandEnum.FINISH_DELIVERY.ordinal()] = CommandEnum.GET_DELIVERIES;
+        feedBacks[CommandEnum.DELETE_USER.ordinal()] = CommandEnum.GET_USERS;
     }
 
     private static void initSuccessPages(){
         successPages = new String[N_COMMANDS];
         failurePages = new String[N_COMMANDS];
 
-        successPages[CommandEnum.LOGIN.ordinal()] = "/controller?command=get_profile";
+        /*Feed back command*/
         failurePages[CommandEnum.LOGIN.ordinal()] = ConfigurationProvider.getProperty(LOGIN_PAGE_PATH);
 
         successPages[CommandEnum.LOGOUT.ordinal()] = ConfigurationProvider.getProperty(LOGIN_PAGE_PATH);
@@ -58,7 +68,7 @@ public class CommandFactory {
         successPages[CommandEnum.REQUEST_DELIVERY.ordinal()] = ConfigurationProvider.getProperty(PROFILE_PAGE_PATH);
         failurePages[CommandEnum.REQUEST_DELIVERY.ordinal()] = ConfigurationProvider.getProperty(ERROR_PAGE_PATH);
 
-        successPages[CommandEnum.FINISH_DELIVERY.ordinal()] = "/controller?command=get_deliveries";
+        /*Feed back command*/
         failurePages[CommandEnum.FINISH_DELIVERY.ordinal()] = ConfigurationProvider.getProperty(PROFILE_PAGE_PATH);
 
         successPages[CommandEnum.GET_DELIVERIES.ordinal()] = ConfigurationProvider.getProperty(DELIVERIES_PAGE_PATH);
@@ -73,12 +83,12 @@ public class CommandFactory {
         successPages[CommandEnum.GET_USERS.ordinal()] = ConfigurationProvider.getProperty(ADMIN_PAGE_PATH);
         failurePages[CommandEnum.GET_USERS.ordinal()] = ConfigurationProvider.getProperty(ADMIN_PAGE_PATH);
 
-        successPages[CommandEnum.DELETE_USER.ordinal()] = "/controller?command=get_users";
-        failurePages[CommandEnum.DELETE_USER.ordinal()] = "/controller?command=get_users";
+        /*Feed back command*/
+        failurePages[CommandEnum.DELETE_USER.ordinal()] = ConfigurationProvider.getProperty(ERROR_PAGE_PATH);
 
     }
 
-    public static Command getCommand(HttpServletRequest request) throws CommandInitializationException {
+    public static Command getCommand(HttpServletRequest request) {
         String action = request.getParameter(COMMAND);
         CommandEnum commandEnum;
         if (action == null || action.isEmpty()){
@@ -100,6 +110,10 @@ public class CommandFactory {
             successPage = ConfigurationProvider.getProperty(IMAGE_SERVLET);
             request.setAttribute(RequestAttributesNameProvider.PAGE, successPages[commandEnum.ordinal()]);
             failurePage = failurePages[commandEnum.ordinal()];
+        }else if(isFeedBackCommand(commandEnum)){
+            CommandEnum nextCommand = feedBacks[commandEnum.ordinal()];
+            successPage = String.format(FEED_BACK_TEMPLATE, nextCommand.toString());
+            failurePage = failurePages[commandEnum.ordinal()];
         }else{
             successPage = successPages[commandEnum.ordinal()];
             failurePage = failurePages[commandEnum.ordinal()];
@@ -117,6 +131,12 @@ public class CommandFactory {
     }
 
     private static boolean isContentRelated(CommandEnum command){
-        return command == CommandEnum.GET_IMAGE || command == CommandEnum.UPDATE_PROFILE_CLIENT || command == CommandEnum.UPDATE_PROFILE_COURIER;
+        return command == CommandEnum.GET_IMAGE || command == CommandEnum.UPDATE_PROFILE_CLIENT
+                || command == CommandEnum.UPDATE_PROFILE_COURIER;
+    }
+
+    private static boolean isFeedBackCommand(CommandEnum command){
+        return command == CommandEnum.LOGIN || command == CommandEnum.DELETE_USER
+                || command == CommandEnum.FINISH_DELIVERY;
     }
 }

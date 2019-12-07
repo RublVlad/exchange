@@ -49,7 +49,7 @@ public class Controller extends HttpServlet implements Servlet {
                 page = "/controller?command=get_users";
             }
             redirect = command.isRedirect();
-        } catch (CommandOperationException | CommandInitializationException e) {
+        } catch (CommandOperationException e) {
             page = ConfigurationProvider.getProperty(ConfigurationProvider.ERROR_PAGE_PATH);
         }
 
