@@ -102,10 +102,8 @@ public class CommandFactory {
         String failurePage;
         if (isSamePage(commandEnum)){
             String pageParameter = request.getParameter(PageAttributesNameProvider.PAGE);
-            String pagePropertyName = pageConstants.get(pageParameter);
-            String pageProperty = ConfigurationProvider.getProperty(pagePropertyName);
-            successPage = pageProperty;
-            failurePage = pageProperty;
+            successPage = pageParameter;
+            failurePage = pageParameter;
         }else if(isContentRelated(commandEnum)){
             successPage = ConfigurationProvider.getProperty(IMAGE_SERVLET);
             request.setAttribute(RequestAttributesNameProvider.PAGE, successPages[commandEnum.ordinal()]);
@@ -123,7 +121,8 @@ public class CommandFactory {
     }
 
     private static boolean isRedirect(CommandEnum commandEnum) {
-        return commandEnum == CommandEnum.FINISH_DELIVERY || commandEnum == CommandEnum.LOGOUT;
+        return commandEnum == CommandEnum.FINISH_DELIVERY || commandEnum == CommandEnum.LOGOUT
+                || commandEnum == CommandEnum.SET_LOCALE;
     }
 
     private static boolean isSamePage(CommandEnum command){

@@ -1,5 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,6 +12,8 @@
     <jsp:include page="template/scripts.jsp"/>
 </head>
 <body>
+
+    <c:set var="page" value="Micheak"/>
     <!--Main layout-->
     <main class="mt-5">
 

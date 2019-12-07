@@ -1,12 +1,15 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE html>
 <html lang="en">
+<fmt:setLocale value="${sessionScope.lang}"/>
+<fmt:setBundle basename="profile" var="rb" />
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <title>Profile</title>
+  <title><fmt:message key="title" bundle="${rb}"/></title>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
   <jsp:include page="template/links.jsp" />
   <jsp:include page="template/scripts.jsp"/>
@@ -25,7 +28,7 @@
 
             <!-- Image -->
             <div class="view overlay rounded z-depth-2 mb-4">
-              <img class="img-fluid" src="<c:url value="/images?role_id=${sessionScope.id}&role=${sessionScope.role}" />" alt="Sample image">
+              <img class="img-fluid" src="<c:url value="/images?role_id=${sessionScope.id}&role=${sessionScope.role}" />" alt="Profile photo">
               <a>
                 <div class="mask rgba-white-slight"></div>
               </a>
@@ -42,8 +45,8 @@
 
               <h2><span>${requestScope.actor.name}</span> <span>${requestScope.actor.surname}</span></h2>
               <hr>
-              <p>Balance: ${requestScope.actor.balance}</p>
-              <a href="<c:url value="/jsp/editProfile.jsp"/> " class="btn btn-indigo">Update profile</a>
+              <p><fmt:message key="balance" bundle="${rb}"/>: ${requestScope.actor.balance}</p>
+              <a href="<c:url value="/jsp/editProfile.jsp"/> " class="btn btn-indigo"><fmt:message key="update_profile" bundle="${rb}"/></a>
 
             </div>
             <!-- Grid column -->

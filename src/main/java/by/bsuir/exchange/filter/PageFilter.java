@@ -20,6 +20,7 @@ public class PageFilter implements Filter{
     private static final String REGISTER_JSP = "/jsp/register.jsp";
     private static final String LOGIN_JSP = "/jsp/login.jsp";
     private static final String ERROR_JSP = "/jsp/error.jsp";
+    private static final String INDEX_JSP = "/index.jsp";
 
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) servletRequest;
@@ -64,5 +65,6 @@ public class PageFilter implements Filter{
         RequestDispatcher dispatcher = servletRequest.getServletContext()
                 .getRequestDispatcher(newServlet);
         dispatcher.forward(req, resp);
+        filterChain.doFilter(servletRequest, servletResponse);
     }
 }
