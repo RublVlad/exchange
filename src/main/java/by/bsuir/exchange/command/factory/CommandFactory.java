@@ -9,25 +9,19 @@ import by.bsuir.exchange.provider.PageAttributesNameProvider;
 import by.bsuir.exchange.provider.RequestAttributesNameProvider;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.Map;
 
 import static by.bsuir.exchange.provider.ConfigurationProvider.*;
 import static by.bsuir.exchange.provider.PageAttributesNameProvider.COMMAND;
 
 public class CommandFactory {
-    private static final int N_COMMANDS = 16;
+    private static final int N_COMMANDS = 17;
     private static final String FEED_BACK_TEMPLATE = "/controller?command=%s";
-
-    private static Map<String, String> pageConstants;
 
     private static String[] successPages;
     private static String[] failurePages;
     private static CommandEnum[] feedBacks;
 
     static {
-        pageConstants = new HashMap<>();
-        pageConstants.put("login", LOGIN_PAGE_PATH);
         initSuccessPages();
         initFeedBacks();
     }
@@ -38,6 +32,7 @@ public class CommandFactory {
         feedBacks[CommandEnum.LOGIN.ordinal()] = CommandEnum.GET_PROFILE;
         feedBacks[CommandEnum.FINISH_DELIVERY.ordinal()] = CommandEnum.GET_DELIVERIES;
         feedBacks[CommandEnum.DELETE_USER.ordinal()] = CommandEnum.GET_USERS;
+        feedBacks[CommandEnum.LIKE_COURIER.ordinal()] = CommandEnum.GET_OFFERS;
     }
 
     private static void initSuccessPages(){
@@ -85,6 +80,9 @@ public class CommandFactory {
 
         /*Feed back command*/
         failurePages[CommandEnum.DELETE_USER.ordinal()] = ConfigurationProvider.getProperty(ERROR_PAGE_PATH);
+
+
+        failurePages[CommandEnum.LIKE_COURIER.ordinal()] = ConfigurationProvider.getProperty(OFFERS_PAGE_PATH);
 
     }
 
@@ -136,6 +134,6 @@ public class CommandFactory {
 
     private static boolean isFeedBackCommand(CommandEnum command){
         return command == CommandEnum.LOGIN || command == CommandEnum.DELETE_USER
-                || command == CommandEnum.FINISH_DELIVERY;
+                || command == CommandEnum.FINISH_DELIVERY || command == CommandEnum.LIKE_COURIER;
     }
 }

@@ -1,9 +1,6 @@
 package by.bsuir.exchange.chain;
 
-import by.bsuir.exchange.bean.ActorBean;
-import by.bsuir.exchange.bean.DeliveryBean;
-import by.bsuir.exchange.bean.OfferBean;
-import by.bsuir.exchange.bean.UserBean;
+import by.bsuir.exchange.bean.*;
 import by.bsuir.exchange.checker.PermissionChecker;
 import by.bsuir.exchange.command.CommandEnum;
 import by.bsuir.exchange.entity.RoleEnum;
@@ -33,6 +30,7 @@ public class ChainFactory { //Load on servlet initialization
     private static CommandHandler actorBeanCreator;
     private static CommandHandler offerBeanCreator;
     private static CommandHandler deliveryBeanCreator;
+    private static CommandHandler relationBeanCreator;
 
     /*Branches*/
     private static CommandHandler sessionBranch;
@@ -44,12 +42,13 @@ public class ChainFactory { //Load on servlet initialization
     private static CommandHandler courierManager;
     private static CommandHandler deliveryManager;
     private static CommandHandler offerManager;
-
+    private static CommandHandler relationManager;
 
     /*Transactional*/
     private static CommandHandler registerTransaction;
     private static CommandHandler finishDeliveryTransaction;
     private static CommandHandler deleteUserTransactional;
+    private static CommandHandler likeTransaction;
 
     /*Validators*/
     private static CommandHandler userBeanValidator;
@@ -120,7 +119,7 @@ public class ChainFactory { //Load on servlet initialization
                 break;
             }
             case GET_OFFERS: {
-                chain = permissionChecker.chain(offerManager).chain(courierManager);
+                chain = permissionChecker.chain(offerManager).chain(courierManager).chain(relationManager);
                 break;
             }
             case GET_DELIVERIES: {  //FIXME check for permissions
@@ -138,6 +137,10 @@ public class ChainFactory { //Load on servlet initialization
             }
             case FINISH_DELIVERY: {
                 chain = finishDeliveryTransaction;
+                break;
+            }
+            case LIKE_COURIER: {
+                chain = permissionChecker.chain(relationBeanCreator).chain(likeTransaction);
                 break;
             }
             default:{
@@ -225,10 +228,29 @@ public class ChainFactory { //Load on servlet initialization
         courierManager = new ActorManager(RoleEnum.COURIER);
         deliveryManager = new DeliveryManager();
         offerManager = new OfferManager();
+        relationManager = new RelationManager();
     }
 
 
     private static void initTransactional() {
+        initFinishDeliveryTransaction();
+        initRegisterTransaction();
+        initDeleteUserTransaction();
+        initLikeTransaction();
+    }
+
+    private static void initLikeTransaction() {
+        likeTransaction = (request, command) -> {
+            ActorManager courierManager = new ActorManager(RoleEnum.COURIER);
+            RelationManager relationManager = new RelationManager();
+            AbstractManager<ActorBean> combination = courierManager.combine(relationManager);
+            boolean status = combination.handle(request, command);
+            combination.closeManager();
+            return status;
+        };
+    }
+
+    private static void initRegisterTransaction(){
         CommandHandler clientRegisterTransactional = (request, command1) -> {
             HttpSessionManager sessionManager = new HttpSessionManager();
             ActorManager actorManager = new ActorManager(RoleEnum.CLIENT);
@@ -247,11 +269,13 @@ public class ChainFactory { //Load on servlet initialization
         };
         CommandHandler registerBranch = clientRegisterTransactional.branch(isCourierRequest, courierRegisterTransactional);
         registerTransaction = userBeanCreator
-                            .chain(userBeanValidator)
-                            .chain(actorBeanCreator)
-                            .chain(actorBeanValidator)
-                            .chain(registerBranch);
+                .chain(userBeanValidator)
+                .chain(actorBeanCreator)
+                .chain(actorBeanValidator)
+                .chain(registerBranch);
+    }
 
+    private static void initFinishDeliveryTransaction(){
         CommandHandler deliveryTransaction = (request, command) -> {
             DeliveryManager deliveryManager = new DeliveryManager();
             ActorManager clientManager = new ActorManager(RoleEnum.CLIENT);
@@ -263,7 +287,9 @@ public class ChainFactory { //Load on servlet initialization
             return status;
         };
         finishDeliveryTransaction = deliveryBeanCreator.chain(offerManager).chain(deliveryTransaction);
+    }
 
+    private static void initDeleteUserTransaction(){
         CommandHandler clientDeleteTransactional = (request, command) -> {
             HttpSessionManager userManager = new HttpSessionManager();
             ActorManager clientManager = new ActorManager(RoleEnum.CLIENT);
@@ -323,6 +349,11 @@ public class ChainFactory { //Load on servlet initialization
         deliveryBeanCreator = (request, command) -> {
             DeliveryBean delivery = new DeliveryBean();
             return getBeanCreator(delivery, RequestAttributesNameProvider.DELIVERY_ATTRIBUTE).handle(request, command);
+        };
+
+        relationBeanCreator = (request, command) -> {
+            RelationBean delivery = new RelationBean();
+            return getBeanCreator(delivery, RequestAttributesNameProvider.RELATION_ATTRIBUTE).handle(request, command);
         };
     }
 }

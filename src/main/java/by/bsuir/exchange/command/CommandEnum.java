@@ -16,5 +16,6 @@ public enum CommandEnum {
     REQUEST_DELIVERY,
     FINISH_DELIVERY,
     SET_LOCALE,
+    LIKE_COURIER,
     EMPTY
 }

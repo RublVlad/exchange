@@ -14,6 +14,7 @@ public class DataBaseAttributesProvider {
     private static final Map<String, String > deliveryColumns = new HashMap<>();
     private static final Map<String, String > offerColumns = new HashMap<>();
     private static final Map<String, String > imagesColumns = new HashMap<>();
+    private static final Map<String, String > relationsColumns = new HashMap<>();
 
     public static final String DRIVER_NAME = "DRIVER_NAME";
     public static final String DATABASE_URL = "DATABASE_URL";
@@ -29,8 +30,9 @@ public class DataBaseAttributesProvider {
     public static final String SURNAME = "SURNAME";
     public static final String USER_ID = "USER_ID";
 
-    public static final String COURIER_TABLE = "courier";
+    public static final String COURIER_TABLE = "courier"; //FIXME
     public static final String BALANCE = "BALANCE";
+    public static final String LIKES = "LIKES";
 
     public static final String DELIVERY_TABLE = "delivery";
     public static final String CLIENT_ID = "CLIENT_ID";
@@ -46,6 +48,9 @@ public class DataBaseAttributesProvider {
     public static final String IMAGES_TABLE = "images";
     public static final String ROLE_ID = "ROLE_ID";
     public static final String FILE_NAME = "FILE_NAME";
+
+    public static final String RELATION_TABLE = "relations";
+    public static final String RELATION = "RELATION";
 
     //FIXME why one should do this???
     static {
@@ -67,6 +72,7 @@ public class DataBaseAttributesProvider {
         courierColumns.put(SURNAME, "surname");
         courierColumns.put(BALANCE, "balance");
         courierColumns.put(USER_ID, "user_id");
+        courierColumns.put(LIKES, "likes");
         courierColumns.put(ARCHIVAL, "archival");
 
         deliveryColumns.put(ID, "id");
@@ -87,6 +93,11 @@ public class DataBaseAttributesProvider {
         imagesColumns.put(ROLE_ID, "role_id");
         imagesColumns.put(FILE_NAME, "file_name");
         imagesColumns.put(ARCHIVAL, "archival");
+
+        relationsColumns.put(ID, "id");
+        relationsColumns.put(CLIENT_ID, "client_id");
+        relationsColumns.put(COURIER_ID, "courier_id");
+        relationsColumns.put(RELATION, "relation");
     }
 
     public static String getProperty(String name){
@@ -94,7 +105,7 @@ public class DataBaseAttributesProvider {
     }
 
     public static String getColumnName(String tableName, String columnName){
-        Map<String, String> columnNames = null;
+        Map<String, String> columnNames;
         switch (tableName){
             case USER_TABLE :{
                 columnNames = usersColumns;
@@ -120,6 +131,11 @@ public class DataBaseAttributesProvider {
                 columnNames = deliveryColumns;
                 break;
             }
+            case RELATION_TABLE : {
+                columnNames = relationsColumns;
+                break;
+            }
+            default: throw new IllegalArgumentException("Unexpected table name");
         }
         String column = columnNames.get(columnName);
         String key = String.format("%s.%s", tableName, column);

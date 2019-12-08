@@ -1,5 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,6 +20,14 @@
     <div class="row">
       <!--Grid column-->
       <c:forEach var="elem" items="${requestScope.offer_list}" varStatus="status">
+        <c:choose>
+          <c:when test="${requestScope.relation_list[status.index].relation == 'LIKE'}" >
+            <c:set var="btnAttr" value="disabled" scope="page" />
+          </c:when>
+          <c:otherwise>
+            <c:set var="btnAttr" value="" scope="page" />
+          </c:otherwise>
+        </c:choose>
         <div class="col-lg-4 col-md-6 mb-4">
           <!--Card-->
           <div class="card">
@@ -40,9 +48,11 @@
               <!--Text-->
               <p class="card-text"><span>Price: ${elem.price}</span></p>
               <p class="card-text"><span>Transport: ${elem.transport}</span></p>
+              <p class="card-text"><span>Likes: ${requestScope.actor_list[status.index].likes}</span></p>
               <c:if test="${sessionScope.role == 'CLIENT'}">
                 <a href="<c:url value="/controller?command=request_delivery&courierId=${elem.courierId}&clientId=${sessionScope.id}"/>" class="btn btn-indigo">Request delivery</a>
               </c:if>
+              <a href="<c:url value="/controller?command=like_courier&courierId=${elem.courierId}&relation=like"/>" class=${btnAttr}><i class="fa fa-thumbs-up"></i></a>
             </div>
           </div>
           <!--/.Card-->

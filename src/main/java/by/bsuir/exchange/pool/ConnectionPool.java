@@ -46,7 +46,7 @@ public abstract class ConnectionPool {
             public void closePool() throws PoolOperationException, PoolDestructionException {
                 if (connection != null) {
                     try {
-                        if (outer == GlobalConnectionPool.getInstance()) {
+                        if (outer == GlobalConnectionPool.getInstance()) {  //FIXME refactor
                             connection.commit();
                             outer.releaseConnection(connection);
                         } else {

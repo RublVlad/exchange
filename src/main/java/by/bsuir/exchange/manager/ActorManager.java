@@ -1,9 +1,6 @@
 package by.bsuir.exchange.manager;
 
-import by.bsuir.exchange.bean.ActorBean;
-import by.bsuir.exchange.bean.DeliveryBean;
-import by.bsuir.exchange.bean.OfferBean;
-import by.bsuir.exchange.bean.UserBean;
+import by.bsuir.exchange.bean.*;
 import by.bsuir.exchange.chain.CommandHandler;
 import by.bsuir.exchange.command.CommandEnum;
 import by.bsuir.exchange.entity.RoleEnum;
@@ -85,12 +82,35 @@ public class ActorManager extends AbstractManager<ActorBean> implements CommandH
                     status = finishDelivery(request);
                     break;
                 }
+                case LIKE_COURIER: {
+                    status = likeCourier(request);
+                    break;
+                }
                 default: {
                     throw new ManagerOperationException("Unexpected command");
                 }
             }
         }catch (RepositoryOperationException e){
             throw new ManagerOperationException(e);
+        }
+        return status;
+    }
+
+    private boolean likeCourier(HttpServletRequest request) throws RepositoryOperationException {
+        RelationBean relation = (RelationBean) request.getAttribute(RequestAttributesNameProvider.RELATION_ATTRIBUTE);
+        long courierId = relation.getCourierId();
+        Specification<ActorBean, PreparedStatement, Connection> specification =
+                ActorIdSqlSpecificationFactory.getSpecification(RoleEnum.COURIER, courierId);
+        Optional< List< ActorBean>> optionalActors = repository.find(specification);
+        boolean status;
+        if (optionalActors.isPresent()){
+            ActorBean courier = optionalActors.get().get(0);
+            long nLikes = courier.getLikes() + 1;
+            courier.setLikes(nLikes);
+            repository.update(courier);
+            status = true;
+        }else{
+            status = false;
         }
         return status;
     }

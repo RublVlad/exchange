@@ -6,6 +6,7 @@ public class ActorBean implements Markable{
     private String surname;
     private double balance;
     private long userId;
+    private long likes;
     private boolean archival;
 
     public ActorBean() {
@@ -20,6 +21,16 @@ public class ActorBean implements Markable{
         this.archival = archival;
     }
 
+    public ActorBean(long id, String name, String surname, double balance, long userId, long likes, boolean archival) {
+        this.id = id;
+        this.name = name;
+        this.surname = surname;
+        this.balance = balance;
+        this.userId = userId;
+        this.likes = likes;
+        this.archival = archival;
+    }
+
     public boolean getArchival() {
         return archival;
     }
@@ -27,6 +38,15 @@ public class ActorBean implements Markable{
     public void setArchival(boolean archival) {
         this.archival = archival;
     }
+
+    public long getLikes() {
+        return likes;
+    }
+
+    public void setLikes(long likes) {
+        this.likes = likes;
+    }
+
 
     public double getBalance() {
         return balance;
