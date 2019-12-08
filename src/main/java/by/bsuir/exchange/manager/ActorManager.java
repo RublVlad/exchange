@@ -61,8 +61,7 @@ public class ActorManager extends AbstractManager<ActorBean> implements CommandH
                     status = getProfile(request);
                     break;
                 }
-                case UPDATE_PROFILE_COURIER:
-                case UPDATE_PROFILE_CLIENT: {
+                case UPDATE_PROFILE: {
                     status = updateProfile(request);
                     break;
                 }

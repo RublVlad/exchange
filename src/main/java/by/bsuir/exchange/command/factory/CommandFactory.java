@@ -14,7 +14,7 @@ import static by.bsuir.exchange.provider.ConfigurationProvider.*;
 import static by.bsuir.exchange.provider.PageAttributesNameProvider.COMMAND;
 
 public class CommandFactory {
-    private static final int N_COMMANDS = 17;
+    private static final int N_COMMANDS = 19;
     private static final String FEED_BACK_TEMPLATE = "/controller?command=%s";
 
     private static String[] successPages;
@@ -51,11 +51,14 @@ public class CommandFactory {
         successPages[CommandEnum.REGISTER.ordinal()] = ConfigurationProvider.getProperty(EDIT_PROFILE_PAGE_PATH);
         failurePages[CommandEnum.REGISTER.ordinal()] = ConfigurationProvider.getProperty(REGISTER_PAGE_PATH);
 
-        successPages[CommandEnum.UPDATE_PROFILE_COURIER.ordinal()] = ConfigurationProvider.getProperty(PROFILE_PAGE_PATH);
-        failurePages[CommandEnum.UPDATE_PROFILE_COURIER.ordinal()] = ConfigurationProvider.getProperty(ERROR_PAGE_PATH);
+        successPages[CommandEnum.UPDATE_PROFILE.ordinal()] = ConfigurationProvider.getProperty(PROFILE_PAGE_PATH);
+        failurePages[CommandEnum.UPDATE_PROFILE.ordinal()] = ConfigurationProvider.getProperty(ERROR_PAGE_PATH);
 
-        successPages[CommandEnum.UPDATE_PROFILE_CLIENT.ordinal()] = ConfigurationProvider.getProperty(PROFILE_PAGE_PATH);
-        failurePages[CommandEnum.UPDATE_PROFILE_CLIENT.ordinal()] = ConfigurationProvider.getProperty(ERROR_PAGE_PATH);
+        successPages[CommandEnum.UPDATE_AVATAR.ordinal()] = ConfigurationProvider.getProperty(PROFILE_PAGE_PATH);
+        failurePages[CommandEnum.UPDATE_AVATAR.ordinal()] = ConfigurationProvider.getProperty(ERROR_PAGE_PATH);
+
+        successPages[CommandEnum.UPDATE_OFFER.ordinal()] = ConfigurationProvider.getProperty(PROFILE_PAGE_PATH);
+        failurePages[CommandEnum.UPDATE_OFFER.ordinal()] = ConfigurationProvider.getProperty(ERROR_PAGE_PATH);
 
         successPages[CommandEnum.GET_COURIERS.ordinal()] = ConfigurationProvider.getProperty(COURIER_PAGE_PATH);
         failurePages[CommandEnum.GET_COURIERS.ordinal()] = ConfigurationProvider.getProperty(PROFILE_PAGE_PATH);
@@ -128,8 +131,7 @@ public class CommandFactory {
     }
 
     private static boolean isContentRelated(CommandEnum command){
-        return command == CommandEnum.GET_IMAGE || command == CommandEnum.UPDATE_PROFILE_CLIENT
-                || command == CommandEnum.UPDATE_PROFILE_COURIER;
+        return command == CommandEnum.GET_IMAGE || command == CommandEnum.UPDATE_AVATAR;
     }
 
     private static boolean isFeedBackCommand(CommandEnum command){

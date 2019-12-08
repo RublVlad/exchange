@@ -46,7 +46,7 @@ public class OfferManager extends AbstractManager<OfferBean> implements CommandH
                     status = deleteUser(request);
                     break;
                 }
-                case UPDATE_PROFILE_COURIER:{
+                case UPDATE_OFFER:{
                     HttpSession session = request.getSession();
                     long id = (long) session.getAttribute(SessionAttributesNameProvider.ID);
                     Specification<OfferBean, PreparedStatement, Connection> specification = new OfferByCourierIdSpecification(id);

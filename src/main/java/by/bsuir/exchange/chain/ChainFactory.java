@@ -6,7 +6,6 @@ import by.bsuir.exchange.command.CommandEnum;
 import by.bsuir.exchange.entity.RoleEnum;
 import by.bsuir.exchange.manager.*;
 import by.bsuir.exchange.manager.exception.ManagerInitializationException;
-import by.bsuir.exchange.manager.exception.ManagerOperationException;
 import by.bsuir.exchange.provider.PageAttributesNameProvider;
 import by.bsuir.exchange.provider.RequestAttributesNameProvider;
 import by.bsuir.exchange.provider.SessionAttributesNameProvider;
@@ -15,11 +14,10 @@ import by.bsuir.exchange.validator.OfferValidator;
 import by.bsuir.exchange.validator.UserValidator;
 import org.apache.commons.beanutils.BeanUtils;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.lang.reflect.InvocationTargetException;
 
-public class ChainFactory { //Load on servlet initialization
+public class ChainFactory { //Loads on servlet initialization
 
 
     /*Chains*/
@@ -64,6 +62,7 @@ public class ChainFactory { //Load on servlet initialization
         initCheckers();
         initValidators();
         initBeanCreators();
+        createEmptyChain();
         try {
             initManagers();
             initBranches();     //FIXME
@@ -89,12 +88,16 @@ public class ChainFactory { //Load on servlet initialization
                 chain = permissionChecker.chain(registerTransaction);
                 break;
             }
-            case UPDATE_PROFILE_COURIER:{
-                chain = permissionChecker.chain(offerBeanCreator).chain(offerBeanValidator).chain(actorBranch).chain(offerManager);
+            case UPDATE_PROFILE:{
+                chain = permissionChecker.chain(actorBranch);
                 break;
             }
-            case UPDATE_PROFILE_CLIENT: {
-                chain = permissionChecker.chain(actorBranch);
+            case UPDATE_OFFER: {
+                chain = permissionChecker.chain(offerBeanCreator).chain(offerBeanValidator).chain(offerManager);
+                break;
+            }
+            case UPDATE_AVATAR: {
+                chain = emptyChain;
                 break;
             }
             case SET_LOCALE:{
@@ -144,7 +147,6 @@ public class ChainFactory { //Load on servlet initialization
                 break;
             }
             default:{
-                createEmptyChain();
                 chain = emptyChain;
                 break;
             }
@@ -208,7 +210,7 @@ public class ChainFactory { //Load on servlet initialization
 
 
     private static void createEmptyChain() {
-        emptyChain = (request, command) -> false;
+        emptyChain = (request, command) -> true;
     }
 
     private static void initSessionBranch() {

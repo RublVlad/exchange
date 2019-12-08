@@ -44,7 +44,7 @@ class Permission{
 }
 
 public class PermissionChecker {
-    private final static int N_COMMANDS = 17;
+    private final static int N_COMMANDS = 19;
     private final static int N_RESOURCES = 6;
     private final static int N_ROLES = 4;
 
@@ -69,6 +69,8 @@ public class PermissionChecker {
             addGetOffersCommandCompetencies();
             addUpdateProfileClientCommandCompetencies();
             addUpdateProfileCourierCommandCompetencies();
+            addUpdateOfferCommandCompetencies();
+//            addUpdateAvatarCommandCompetencies();
             addLikeCourierCommandCommandCompetencies();
 
             addGuestCompetencies();
@@ -78,6 +80,14 @@ public class PermissionChecker {
         }
 
         return instance;
+    }
+
+
+
+    private static void addUpdateOfferCommandCompetencies() {
+        int i = CommandEnum.UPDATE_OFFER.ordinal();
+        EnumSet<PermissionEnum> sessionPermissions = EnumSet.of(UPDATE);
+        instance.commandCompetencies[i][ResourceEnum.OFFER.ordinal()] = new Permission(sessionPermissions);
     }
 
     private static void addDeleteUserCommandCompetencies() {
@@ -184,6 +194,9 @@ public class PermissionChecker {
 
     public boolean checkPermission(RoleEnum role, CommandEnum command){
         int iRole = role.ordinal();
+        if (command == CommandEnum.UPDATE_PROFILE){
+            command = role == RoleEnum.CLIENT? CommandEnum.UPDATE_PROFILE_CLIENT : CommandEnum.UPDATE_PROFILE_COURIER;
+        }
         int iCommand = command.ordinal();
         for (int j = 0; j < N_RESOURCES; j++){
             if (commandCompetencies[iCommand][j] == null){
