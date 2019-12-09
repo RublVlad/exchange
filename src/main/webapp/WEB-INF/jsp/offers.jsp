@@ -51,8 +51,8 @@
               <p class="card-text"><span>Likes: ${requestScope.actor_list[status.index].likes}</span></p>
               <c:if test="${sessionScope.role == 'CLIENT'}">
                 <a href="<c:url value="/controller?command=request_delivery&courierId=${elem.courierId}&clientId=${sessionScope.id}"/>" class="btn btn-indigo">Request delivery</a>
+                <a href="<c:url value="/controller?command=like_courier&courierId=${elem.courierId}&relation=like"/>" class=${btnAttr}><i class="fa fa-thumbs-up"></i></a>
               </c:if>
-              <a href="<c:url value="/controller?command=like_courier&courierId=${elem.courierId}&relation=like"/>" class=${btnAttr}><i class="fa fa-thumbs-up"></i></a>
             </div>
           </div>
           <!--/.Card-->
