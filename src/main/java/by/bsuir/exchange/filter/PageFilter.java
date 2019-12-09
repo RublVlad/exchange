@@ -7,7 +7,6 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.lang.module.Configuration;
 
 @WebFilter(urlPatterns = {"/jsp/couriers.jsp", "/jsp/deliveries.jsp", "/jsp/offers.jsp", "/jsp/profile.jsp",
         "/jsp/editProfile.jsp", "/jsp/register.jsp", "/jsp/login.jsp"})
@@ -20,7 +19,6 @@ public class PageFilter implements Filter{
     private static final String REGISTER_JSP = "/jsp/register.jsp";
     private static final String LOGIN_JSP = "/jsp/login.jsp";
     private static final String ERROR_JSP = "/jsp/error.jsp";
-    private static final String INDEX_JSP = "/index.jsp";
 
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) servletRequest;

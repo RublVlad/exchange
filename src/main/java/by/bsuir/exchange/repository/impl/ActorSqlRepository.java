@@ -79,9 +79,9 @@ public class ActorSqlRepository extends SqlRepository<ActorBean> {
             Connection connection = pool.getConnection();
             PreparedStatement statement = connection.prepareStatement(insertTemplate, Statement.RETURN_GENERATED_KEYS);
             if (role == RoleEnum.CLIENT){
-                populateClient(statement, actor);
+                populateClientInsert(statement, actor);
             }else{
-                populateCourier(statement, actor);
+                populateCourierInsert(statement, actor);
             }
             int affectedRows = statement.executeUpdate();
             if (affectedRows == 0){
@@ -97,6 +97,23 @@ public class ActorSqlRepository extends SqlRepository<ActorBean> {
         }
     }
 
+    private void populateCourierInsert(PreparedStatement statement, ActorBean actor) throws SQLException {
+        statement.setString(1, actor.getName());
+        statement.setString(2, actor.getSurname());
+        statement.setDouble(3, actor.getBalance());
+        statement.setLong(4, actor.getLikes());
+        statement.setBoolean(5, actor.getArchival());
+        statement.setLong(6, actor.getUserId());
+    }
+
+    private void populateClientInsert(PreparedStatement statement, ActorBean actor) throws SQLException {
+        statement.setString(1, actor.getName());
+        statement.setString(2, actor.getSurname());
+        statement.setDouble(3, actor.getBalance());
+        statement.setBoolean(4, actor.getArchival());
+        statement.setLong(5, actor.getUserId());
+    }
+
     @Override
     public void update(ActorBean actor) throws RepositoryOperationException {
         try {
@@ -104,9 +121,9 @@ public class ActorSqlRepository extends SqlRepository<ActorBean> {
             PreparedStatement statement = connection.prepareStatement(updateTemplate);
 
             if (role == RoleEnum.CLIENT){
-                populateClient(statement, actor);
+                populateClientUpdate(statement, actor);
             }else{
-                populateCourier(statement, actor);
+                populateCourierUpdate(statement, actor);
             }
 
             statement.executeUpdate();
@@ -116,7 +133,7 @@ public class ActorSqlRepository extends SqlRepository<ActorBean> {
         }
     }
 
-    private void populateClient(PreparedStatement statement, ActorBean client) throws SQLException {
+    private void populateClientUpdate(PreparedStatement statement, ActorBean client) throws SQLException {
         statement.setString(1, client.getName());
         statement.setString(2, client.getSurname());
         statement.setDouble(3, client.getBalance());
@@ -124,7 +141,7 @@ public class ActorSqlRepository extends SqlRepository<ActorBean> {
         statement.setLong(5, client.getId());
     }
 
-    private void populateCourier(PreparedStatement statement, ActorBean courier) throws SQLException {
+    private void populateCourierUpdate(PreparedStatement statement, ActorBean courier) throws SQLException {
         statement.setString(1, courier.getName());
         statement.setString(2, courier.getSurname());
         statement.setDouble(3, courier.getBalance());
