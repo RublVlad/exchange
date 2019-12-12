@@ -13,8 +13,8 @@ public class UserByEmailSqlSpecification implements Specification<UserBean, Prep
     private String email;
     private Connection connection;
 
-    public UserByEmailSqlSpecification(UserBean user) {
-        this.email = user.getEmail();
+    public UserByEmailSqlSpecification(String email) {
+        this.email = email;
     }
 
     @Override

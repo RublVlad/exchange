@@ -108,7 +108,8 @@ public class HttpSessionManager extends AbstractManager<UserBean> implements Com
     }
 
     private boolean login(HttpServletRequest request, UserBean userRequest) throws RepositoryOperationException {
-        Specification<UserBean, PreparedStatement, Connection> userEmailSpecification = new UserByEmailSqlSpecification(userRequest);
+        Specification<UserBean, PreparedStatement, Connection> userEmailSpecification =
+                new UserByEmailSqlSpecification(userRequest.getEmail());
         Optional<List<UserBean>> userOption = repository.find(userEmailSpecification);
         if (!userOption.isPresent()){
             request.setAttribute(RequestAttributesNameProvider.ERROR_STRING, INVALID_CREDENTIALS_ERROR);
@@ -130,7 +131,8 @@ public class HttpSessionManager extends AbstractManager<UserBean> implements Com
     }
 
     private boolean register(HttpServletRequest request, UserBean user) throws RepositoryOperationException {
-        Specification<UserBean, PreparedStatement, Connection> specification = new UserByEmailSqlSpecification(user);
+        Specification<UserBean, PreparedStatement, Connection> specification =
+                new UserByEmailSqlSpecification(user.getEmail());
         Optional<List<UserBean>> optionalUsers = repository.find(specification);
         if (optionalUsers.isPresent()){
             request.setAttribute(RequestAttributesNameProvider.ERROR_STRING, DUPLICATE_EMAIL_ERROR);
