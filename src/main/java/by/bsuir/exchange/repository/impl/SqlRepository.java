@@ -1,10 +1,12 @@
 package by.bsuir.exchange.repository.impl;
 
+import by.bsuir.exchange.manager.exception.ManagerOperationException;
 import by.bsuir.exchange.pool.ConnectionPool;
 import by.bsuir.exchange.pool.GlobalConnectionPool;
 import by.bsuir.exchange.pool.exception.PoolDestructionException;
 import by.bsuir.exchange.pool.exception.PoolInitializationException;
 import by.bsuir.exchange.pool.exception.PoolOperationException;
+import by.bsuir.exchange.pool.exception.PoolTimeoutException;
 import by.bsuir.exchange.repository.Repository;
 import by.bsuir.exchange.repository.exception.RepositoryInitializationException;
 import by.bsuir.exchange.repository.exception.RepositoryOperationException;
@@ -21,12 +23,42 @@ import java.util.Optional;
 
 public abstract class SqlRepository<T> implements Repository<T, PreparedStatement, Connection> {
     ConnectionPool pool;
+    private Connection transactionConnection;
 
     SqlRepository() throws RepositoryInitializationException {
         try {
             pool = GlobalConnectionPool.getInstance();
         } catch (PoolInitializationException e) {
             throw new RepositoryInitializationException(e);
+        }
+    }
+
+    public void startTransaction() throws ManagerOperationException {
+        try {
+            transactionConnection = pool.getConnection();
+            transactionConnection.setAutoCommit(false);
+        } catch (PoolTimeoutException | PoolOperationException | SQLException e) {
+            throw new ManagerOperationException(e);
+        }
+    }
+
+    public void abortTransaction() throws ManagerOperationException {
+        try {
+            transactionConnection.rollback();
+            transactionConnection.setAutoCommit(true);
+            pool.releaseConnection(transactionConnection);
+        } catch (PoolTimeoutException | SQLException e) {
+            throw new ManagerOperationException(e);
+        }
+    }
+
+    public void finishTransaction() throws ManagerOperationException {
+        try {
+            transactionConnection.commit();
+            transactionConnection.setAutoCommit(true);
+            pool.releaseConnection(transactionConnection);
+        } catch (PoolTimeoutException | SQLException e) {
+            throw new ManagerOperationException(e);
         }
     }
 
@@ -41,7 +73,7 @@ public abstract class SqlRepository<T> implements Repository<T, PreparedStatemen
             ResultSet resultSet = preparedStatement.executeQuery();
             list = process(resultSet);
             pool.releaseConnection(connection);
-        } catch (Exception e) {
+        } catch (Exception e) {                     //FIXME exception caught
             throw new RepositoryOperationException(e);
         } finally {
             if (preparedStatement != null){
@@ -60,7 +92,7 @@ public abstract class SqlRepository<T> implements Repository<T, PreparedStatemen
     public void closeRepository() throws RepositoryOperationException {
         try {
             pool.closePool();
-        } catch (PoolOperationException | PoolDestructionException e) {
+        } catch (PoolDestructionException e) {
             throw new RepositoryOperationException(e);
         }
     }

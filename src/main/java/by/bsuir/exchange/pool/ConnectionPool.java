@@ -12,48 +12,37 @@ public abstract class ConnectionPool {
     ConnectionPool outer;
 
     public abstract Connection getConnection() throws PoolTimeoutException, PoolOperationException;
-    public abstract void releaseConnection(Connection con) throws PoolOperationException, PoolTimeoutException;
-    public abstract void closePool() throws PoolOperationException, PoolDestructionException;
+    public abstract void releaseConnection(Connection con) throws PoolTimeoutException;
+    public abstract void closePool() throws PoolDestructionException;
 
     public static ConnectionPool getLocalPool() throws PoolInitializationException {
         ConnectionPool localPool = new ConnectionPool(){
-            private static final int ALL_DONE = 2;
             private Connection connection;
-            private int statusOperations;
-            private int statusClosed;
+            private int nConnectionHold;
 
             @Override
             public Connection getConnection() throws PoolOperationException, PoolTimeoutException {
                 if (connection == null){
-                    try {
-                        connection = outer.getConnection();
-                        if (outer == GlobalConnectionPool.getInstance()){
-                            connection.setAutoCommit(false);
-                        }
-                    } catch (SQLException | PoolInitializationException e) {
-                        throw new PoolOperationException(e);
-                    }
+                    connection = outer.getConnection();
                 }
+                ++nConnectionHold;
                 return connection;
             }
 
             @Override
-            public void releaseConnection(Connection con) throws PoolOperationException, PoolTimeoutException {
-                ++statusOperations;
+            public void releaseConnection(Connection con) throws PoolTimeoutException {
+                --nConnectionHold;
             }
 
             @Override
-            public void closePool() throws PoolOperationException, PoolDestructionException {
-                if (connection != null) {
+            public void closePool() throws PoolDestructionException {
+                if (nConnectionHold != 0) {
+                    throw new PoolDestructionException("Number of given connections is not equal to returned");
+                }
+                if (connection != null){
                     try {
-                        if (outer == GlobalConnectionPool.getInstance()) {  //FIXME refactor
-                            connection.commit();
-                            outer.releaseConnection(connection);
-                        } else {
-                            outer.releaseConnection(connection);
-                        }
-                        connection = null;
-                    } catch (PoolTimeoutException | SQLException | PoolInitializationException e) {
+                        outer.releaseConnection(connection);
+                    } catch ( PoolTimeoutException e) {
                         throw new PoolDestructionException(e);
                     }
                 }
@@ -63,7 +52,7 @@ public abstract class ConnectionPool {
         return localPool;
     }
 
-    public ConnectionPool combine(ConnectionPool other) throws PoolInitializationException {
+    public ConnectionPool combine(ConnectionPool other){
         other.outer = this;
         return this;
     }

@@ -27,7 +27,7 @@ public class GlobalConnectionPool extends ConnectionPool {
             if (INSTANCE == null){
                 try {
                     INSTANCE = new GlobalConnectionPool();
-                } catch (SQLException | ClassNotFoundException e) {
+                } catch (SQLException e) {
                     throw new PoolInitializationException(e);
                 }
             }
@@ -38,7 +38,7 @@ public class GlobalConnectionPool extends ConnectionPool {
     }
 
 
-    private GlobalConnectionPool() throws SQLException, ClassNotFoundException {
+    private GlobalConnectionPool() throws SQLException {
         String url = DataBaseAttributesProvider.getProperty(DataBaseAttributesProvider.DATABASE_URL);
         connections = new LinkedBlockingQueue<>(CAPACITY);
         for (int i = 0; i < CAPACITY; i++){

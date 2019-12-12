@@ -245,7 +245,9 @@ public class ChainFactory { //Loads on servlet initialization
         likeTransaction = (request, command) -> {
             ActorManager courierManager = new ActorManager(RoleEnum.COURIER);
             RelationManager relationManager = new RelationManager();
-            AbstractManager<ActorBean> combination = courierManager.combine(relationManager);
+            AbstractManager<ActorBean> transactionalManager =
+                    AbstractManager.createTransactionalManager(courierManager);
+            AbstractManager<ActorBean> combination = transactionalManager.combine(relationManager);
             boolean status = combination.handle(request, command);
             combination.closeManager();
             return status;
@@ -256,17 +258,19 @@ public class ChainFactory { //Loads on servlet initialization
         CommandHandler clientRegisterTransactional = (request, command1) -> {
             HttpSessionManager sessionManager = new HttpSessionManager();
             ActorManager actorManager = new ActorManager(RoleEnum.CLIENT);
-            AbstractManager<UserBean> combination = sessionManager.combine(actorManager);
-            boolean status = combination.handle(request, command1);
-            combination.closeManager();
+            AbstractManager<UserBean> transactionalManager = AbstractManager.createTransactionalManager(sessionManager);
+            AbstractManager fullCombination = transactionalManager.combine(actorManager);
+            boolean status = fullCombination.handle(request, command1);
+            fullCombination.closeManager();
             return status;
         };
         CommandHandler courierRegisterTransactional = (request, command1) -> {
             HttpSessionManager sessionManager = new HttpSessionManager();
             ActorManager actorManager = new ActorManager(RoleEnum.COURIER);
-            AbstractManager<UserBean> combination = sessionManager.combine(actorManager);
-            boolean status = combination.handle(request, command1);
-            combination.closeManager();
+            AbstractManager<UserBean> transactionalManager = AbstractManager.createTransactionalManager(sessionManager);
+            AbstractManager fullCombination = transactionalManager.combine(actorManager);
+            boolean status = fullCombination.handle(request, command1);
+            fullCombination.closeManager();
             return status;
         };
         CommandHandler registerBranch = clientRegisterTransactional.branch(isCourierRequest, courierRegisterTransactional);
@@ -282,7 +286,9 @@ public class ChainFactory { //Loads on servlet initialization
             DeliveryManager deliveryManager = new DeliveryManager();
             ActorManager clientManager = new ActorManager(RoleEnum.CLIENT);
             ActorManager courierManager = new ActorManager(RoleEnum.COURIER);
-            AbstractManager<DeliveryBean> deliveryClientCombination = deliveryManager.combine(clientManager);
+            AbstractManager<DeliveryBean> transactionalManager =
+                    AbstractManager.createTransactionalManager(deliveryManager);
+            AbstractManager<DeliveryBean> deliveryClientCombination = transactionalManager.combine(clientManager);
             AbstractManager<DeliveryBean> deliveryActorCombination = deliveryClientCombination.combine(courierManager);
             boolean status = deliveryActorCombination.handle(request, command);
             deliveryActorCombination.closeManager();
@@ -297,7 +303,9 @@ public class ChainFactory { //Loads on servlet initialization
             ActorManager clientManager = new ActorManager(RoleEnum.CLIENT);
             DeliveryManager deliveryManager = new DeliveryManager();
             ImageManager imageManager = new ImageManager();
-            AbstractManager<UserBean> userClientCombination = userManager.combine(clientManager);
+            AbstractManager<UserBean> transactionalManager =
+                    AbstractManager.createTransactionalManager(userManager);
+            AbstractManager<UserBean> userClientCombination = transactionalManager.combine(clientManager);
             AbstractManager<UserBean> deliveryCombination = userClientCombination.combine(deliveryManager);
             AbstractManager<UserBean> fullCombination = deliveryCombination.combine(imageManager);
             boolean status = fullCombination.handle(request, command);
@@ -307,11 +315,13 @@ public class ChainFactory { //Loads on servlet initialization
 
         CommandHandler courierDeleteTransactional = (request, command) -> {
             HttpSessionManager userManager = new HttpSessionManager();
-            ActorManager clientManager = new ActorManager(RoleEnum.COURIER);
+            ActorManager courierManager = new ActorManager(RoleEnum.COURIER);
             DeliveryManager deliveryManager = new DeliveryManager();
             OfferManager offerManager = new OfferManager();
             ImageManager imageManager = new ImageManager();
-            AbstractManager<UserBean> userClientCombination = userManager.combine(clientManager);
+            AbstractManager<UserBean> transactionalManager =
+                    AbstractManager.createTransactionalManager(userManager);
+            AbstractManager<UserBean> userClientCombination = transactionalManager.combine(courierManager);
             AbstractManager<UserBean> deliveryCombination = userClientCombination.combine(deliveryManager);
             AbstractManager<UserBean> offerCombination = deliveryCombination.combine(offerManager);
             AbstractManager<UserBean> fullCombination = offerCombination.combine(imageManager);
