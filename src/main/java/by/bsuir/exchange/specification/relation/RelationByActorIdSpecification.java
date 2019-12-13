@@ -7,7 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 
 public class RelationByActorIdSpecification implements Specification<RelationBean, PreparedStatement, Connection> {
-    private static String QUERY = "SELECT * FROM relations WHERE client_id = ? AND courier_id = ?";
+    private static final String QUERY = "SELECT * FROM relations WHERE client_id = ? AND courier_id = ?";
 
     private Connection connection;
 
