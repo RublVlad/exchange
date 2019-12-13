@@ -1,6 +1,6 @@
 package by.bsuir.exchange.bean;
 
-public class RelationBean {
+public class RelationBean implements Markable{
     private long id;
     private long clientId;
     private long courierId;

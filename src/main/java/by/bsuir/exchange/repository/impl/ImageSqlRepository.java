@@ -1,24 +1,30 @@
 package by.bsuir.exchange.repository.impl;
 
 import by.bsuir.exchange.bean.ImageBean;
-import by.bsuir.exchange.pool.GlobalConnectionPool;
-import by.bsuir.exchange.pool.exception.PoolInitializationException;
-import by.bsuir.exchange.pool.exception.PoolTimeoutException;
+import by.bsuir.exchange.pool.ConnectionPool;
 import by.bsuir.exchange.provider.DataBaseAttributesProvider;
 import by.bsuir.exchange.repository.exception.RepositoryInitializationException;
-import by.bsuir.exchange.repository.exception.RepositoryOperationException;
 
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
 public class ImageSqlRepository extends SqlRepository<ImageBean> {
+    private static final String INSERT_QUERY =
+            "INSERT INTO images (role, role_id, file_name, archival) VALUES (?, ?, ?, ?)";
+    private static final String UPDATE_QUERY =
+            "UPDATE images SET file_name=?, archival=? WHERE role = ? AND role_id = ?";
 
     public ImageSqlRepository() throws RepositoryInitializationException {
         super();
     }
 
+    public ImageSqlRepository(ConnectionPool pool){
+        super(pool);
+    }
 
     @Override
     public Optional<List<ImageBean>> process(ResultSet resultSet) throws SQLException {
@@ -56,46 +62,28 @@ public class ImageSqlRepository extends SqlRepository<ImageBean> {
     }
 
     @Override
-    public void add(ImageBean entity) throws RepositoryOperationException {
-        String template = "INSERT INTO images (role, role_id, file_name, archival) VALUES (?, ?, ?, ?)";
-        try{
-            GlobalConnectionPool pool = GlobalConnectionPool.getInstance();
-            Connection connection = pool.getConnection();
-            PreparedStatement statement = connection.prepareStatement(template, Statement.RETURN_GENERATED_KEYS);
-            statement.setString(1, entity.getRole().toUpperCase());
-            statement.setLong(2, entity.getRoleId());
-            statement.setString(3, entity.getFileName());
-            statement.setBoolean(4, entity.getArchival());
-            int affectedRows = statement.executeUpdate();
-            if (affectedRows == 0){
-                throw new RepositoryOperationException("Unable to perform operation");
-            }
-            ResultSet generatedKeys = statement.getGeneratedKeys();
-            if (generatedKeys.next()){
-                entity.setId(generatedKeys.getLong(1));
-            }
-            pool.releaseConnection(connection);
-        } catch (PoolInitializationException | PoolTimeoutException | SQLException e) {
-            throw new RepositoryOperationException(e);
-        }
+    public String getAddQuery() {
+        return INSERT_QUERY;
     }
 
     @Override
-    public void update(ImageBean entity) throws RepositoryOperationException {
-        String template = "UPDATE images SET file_name=?, archival=? WHERE role = ? AND role_id = ?";
-        try{
-            GlobalConnectionPool pool = GlobalConnectionPool.getInstance();
-            Connection connection = pool.getConnection();
-            PreparedStatement statement = connection.prepareStatement(template);
-            statement.setString(1, entity.getFileName());
-            statement.setBoolean(2, entity.getArchival());
-            statement.setString(3, entity.getRole());
-            statement.setLong(4, entity.getRoleId());
-            statement.executeUpdate();
-            pool.releaseConnection(connection);
-        } catch (PoolInitializationException | PoolTimeoutException | SQLException e) {
-            throw new RepositoryOperationException(e);
-        }
+    public void populateAddStatement(ImageBean entity, PreparedStatement statement) throws SQLException {
+        statement.setString(1, entity.getRole().toUpperCase());
+        statement.setLong(2, entity.getRoleId());
+        statement.setString(3, entity.getFileName());
+        statement.setBoolean(4, entity.getArchival());
     }
 
+    @Override
+    public String getUpdateQuery() {
+        return UPDATE_QUERY;
+    }
+
+    @Override
+    public void populateUpdateStatement(ImageBean entity, PreparedStatement statement) throws SQLException {
+        statement.setString(1, entity.getFileName());
+        statement.setBoolean(2, entity.getArchival());
+        statement.setString(3, entity.getRole());
+        statement.setLong(4, entity.getRoleId());
+    }
 }

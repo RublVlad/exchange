@@ -2,13 +2,13 @@ package by.bsuir.exchange.repository.impl;
 
 import by.bsuir.exchange.bean.ActorBean;
 import by.bsuir.exchange.entity.RoleEnum;
-import by.bsuir.exchange.pool.exception.PoolOperationException;
-import by.bsuir.exchange.pool.exception.PoolTimeoutException;
+import by.bsuir.exchange.pool.ConnectionPool;
 import by.bsuir.exchange.provider.DataBaseAttributesProvider;
 import by.bsuir.exchange.repository.exception.RepositoryInitializationException;
-import by.bsuir.exchange.repository.exception.RepositoryOperationException;
 
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +20,13 @@ public class ActorSqlRepository extends SqlRepository<ActorBean> {
 
     public ActorSqlRepository(String updateTemplate, String insertTemplate, RoleEnum role) throws RepositoryInitializationException {
         super();
+        this.updateTemplate = updateTemplate;
+        this.insertTemplate = insertTemplate;
+        this.role = role;
+    }
+
+    public ActorSqlRepository(ConnectionPool pool, String updateTemplate, String insertTemplate, RoleEnum role) throws RepositoryInitializationException {
+        super(pool);
         this.updateTemplate = updateTemplate;
         this.insertTemplate = insertTemplate;
         this.role = role;
@@ -72,28 +79,31 @@ public class ActorSqlRepository extends SqlRepository<ActorBean> {
         return optionList;
     }
 
-    /*Sets id of the bean argument on success*/
     @Override
-    public void add(ActorBean actor) throws RepositoryOperationException {
-        try{
-            Connection connection = pool.getConnection();
-            PreparedStatement statement = connection.prepareStatement(insertTemplate, Statement.RETURN_GENERATED_KEYS);
-            if (role == RoleEnum.CLIENT){
-                populateClientInsert(statement, actor);
-            }else{
-                populateCourierInsert(statement, actor);
-            }
-            int affectedRows = statement.executeUpdate();
-            if (affectedRows == 0){
-                throw new RepositoryOperationException("Unable to perform operation");
-            }
-            ResultSet generatedKeys = statement.getGeneratedKeys();
-            if (generatedKeys.next()){
-                actor.setId(generatedKeys.getLong(1));
-            }
-            pool.releaseConnection(connection);
-        } catch (PoolTimeoutException | SQLException | PoolOperationException e) {
-            throw new RepositoryOperationException(e);
+    public String getAddQuery() {
+        return insertTemplate;
+    }
+
+    @Override
+    public void populateAddStatement(ActorBean entity, PreparedStatement statement) throws SQLException {
+        if (role == RoleEnum.CLIENT){
+            populateClientInsert(statement, entity);
+        }else{
+            populateCourierInsert(statement, entity);
+        }
+    }
+
+    @Override
+    public String getUpdateQuery() {
+        return updateTemplate;
+    }
+
+    @Override
+    public void populateUpdateStatement(ActorBean entity, PreparedStatement statement) throws SQLException {
+        if (role == RoleEnum.CLIENT){
+            populateClientUpdate(statement, entity);
+        }else{
+            populateCourierUpdate(statement, entity);
         }
     }
 
@@ -114,24 +124,6 @@ public class ActorSqlRepository extends SqlRepository<ActorBean> {
         statement.setLong(5, actor.getUserId());
     }
 
-    @Override
-    public void update(ActorBean actor) throws RepositoryOperationException {
-        try {
-            Connection connection = pool.getConnection();
-            PreparedStatement statement = connection.prepareStatement(updateTemplate);
-
-            if (role == RoleEnum.CLIENT){
-                populateClientUpdate(statement, actor);
-            }else{
-                populateCourierUpdate(statement, actor);
-            }
-
-            statement.executeUpdate();
-            pool.releaseConnection(connection);
-        }catch (PoolTimeoutException | SQLException | PoolOperationException e) {
-            throw new RepositoryOperationException(e);
-        }
-    }
 
     private void populateClientUpdate(PreparedStatement statement, ActorBean client) throws SQLException {
         statement.setString(1, client.getName());

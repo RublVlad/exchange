@@ -1,5 +1,6 @@
 package by.bsuir.exchange.manager;
 
+import by.bsuir.exchange.bean.Markable;
 import by.bsuir.exchange.chain.CommandHandler;
 import by.bsuir.exchange.command.CommandEnum;
 import by.bsuir.exchange.manager.exception.ManagerOperationException;
@@ -11,29 +12,34 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-public abstract class AbstractManager<T> implements CommandHandler {
+public abstract class AbstractManager<T extends Markable> implements CommandHandler {
     SqlRepository<T> repository;
     LinkedList<AbstractManager> abstractManagers;
 
     public abstract boolean handle(HttpServletRequest request, CommandEnum command) throws ManagerOperationException;
 
-    public static <T> AbstractManager<T> createTransactionalManager(AbstractManager<T> manager){
+    public static <T extends Markable> AbstractManager<T> createTransactionalManager(AbstractManager<T> manager){
         AbstractManager<T> transactional = new AbstractManager<>() {
 
             @Override
             public boolean handle(HttpServletRequest request, CommandEnum command) throws ManagerOperationException {
-                repository.startTransaction();
-                boolean status = true;
-                for (AbstractManager m : abstractManagers){
-                    status = m.handle(request, command);
-                    if (!status){
-                        break;
+                boolean status;
+                try{
+                    repository.startTransaction();
+                    status = true;
+                    for (AbstractManager m : abstractManagers){
+                        status = m.handle(request, command);
+                        if (!status){
+                            break;
+                        }
                     }
-                }
-                if (status){
-                    repository.finishTransaction();
-                }else{
-                    repository.abortTransaction();
+                    if (status){
+                        repository.finishTransaction();
+                    }else{
+                        repository.abortTransaction();
+                    }
+                } catch (RepositoryOperationException e) {
+                    throw new ManagerOperationException(e);
                 }
                 return status;
             }
@@ -52,7 +58,7 @@ public abstract class AbstractManager<T> implements CommandHandler {
         return transactional;
     }
 
-    public <T2> AbstractManager<T> combine(AbstractManager<T2> other) throws ManagerOperationException {
+    public <T2 extends Markable> AbstractManager<T> combine(AbstractManager<T2> other) throws ManagerOperationException {
         try {
             repository.pack(other.repository);
             if (abstractManagers == null){

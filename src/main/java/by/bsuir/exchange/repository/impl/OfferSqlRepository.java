@@ -1,23 +1,30 @@
 package by.bsuir.exchange.repository.impl;
 
 import by.bsuir.exchange.bean.OfferBean;
-import by.bsuir.exchange.pool.GlobalConnectionPool;
-import by.bsuir.exchange.pool.exception.PoolInitializationException;
-import by.bsuir.exchange.pool.exception.PoolOperationException;
-import by.bsuir.exchange.pool.exception.PoolTimeoutException;
+import by.bsuir.exchange.pool.ConnectionPool;
 import by.bsuir.exchange.provider.DataBaseAttributesProvider;
 import by.bsuir.exchange.repository.exception.RepositoryInitializationException;
-import by.bsuir.exchange.repository.exception.RepositoryOperationException;
 
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
 public class OfferSqlRepository extends SqlRepository<OfferBean> {
+    private static final String INSERT_QUERY =
+            "INSERT INTO offers (price, transport,  archival, courier_id) VALUES (?, ?, ?, ?)";
+    private static final String UPDATE_QUERY =
+            "UPDATE offers SET price=?, transport=?, archival=? WHERE id=?";
+
 
     public OfferSqlRepository() throws RepositoryInitializationException {
         super();
+    }
+
+    public OfferSqlRepository(ConnectionPool pool){
+        super(pool);
     }
 
     @Override
@@ -58,43 +65,28 @@ public class OfferSqlRepository extends SqlRepository<OfferBean> {
     }
 
     @Override
-    public void add(OfferBean bean) throws RepositoryOperationException {
-        String template = "INSERT INTO offers (price, transport,  archival, courier_id) VALUES (?, ?, ?, ?)";
-        try{
-            Connection connection = pool.getConnection();
-            PreparedStatement statement = connection.prepareStatement(template, Statement.RETURN_GENERATED_KEYS);
-            statement.setDouble(1, bean.getPrice());
-            statement.setString(2, bean.getTransport());
-            statement.setBoolean(3, bean.getArchival());
-            statement.setLong(4, bean.getCourierId());
-            int affectedRows = statement.executeUpdate();
-            if (affectedRows == 0){
-                throw new RepositoryOperationException("Unable to perform operation");
-            }
-            ResultSet generatedKeys = statement.getGeneratedKeys();
-            if (generatedKeys.next()){
-                bean.setId(generatedKeys.getLong(1));
-            }
-            pool.releaseConnection(connection);
-        } catch (PoolTimeoutException | SQLException | PoolOperationException e) {
-            throw new RepositoryOperationException(e);
-        }
+    public String getAddQuery() {
+        return INSERT_QUERY;
     }
 
     @Override
-    public void update(OfferBean bean) throws RepositoryOperationException {
-        String template = "UPDATE offers SET price=?, transport=?, archival=? WHERE id=?";
-        try{
-            Connection connection = pool.getConnection();
-            PreparedStatement statement = connection.prepareStatement(template);
-            statement.setDouble(1, bean.getPrice());
-            statement.setString(2, bean.getTransport());
-            statement.setBoolean(3, bean.getArchival());
-            statement.setLong(4, bean.getId());
-            statement.executeUpdate();
-            pool.releaseConnection(connection);
-        } catch (PoolTimeoutException | SQLException | PoolOperationException e) {
-            throw new RepositoryOperationException(e);
-        }
+    public void populateAddStatement(OfferBean entity, PreparedStatement statement) throws SQLException {
+        statement.setDouble(1, entity.getPrice());
+        statement.setString(2, entity.getTransport());
+        statement.setBoolean(3, entity.getArchival());
+        statement.setLong(4, entity.getCourierId());
+    }
+
+    @Override
+    public String getUpdateQuery() {
+        return UPDATE_QUERY;
+    }
+
+    @Override
+    public void populateUpdateStatement(OfferBean entity, PreparedStatement statement) throws SQLException {
+        statement.setDouble(1, entity.getPrice());
+        statement.setString(2, entity.getTransport());
+        statement.setBoolean(3, entity.getArchival());
+        statement.setLong(4, entity.getId());
     }
 }

@@ -1,6 +1,6 @@
 package by.bsuir.exchange.bean;
 
-public class OfferBean {
+public class OfferBean implements Markable{
     private long id;
     private String transport;
     private double price;

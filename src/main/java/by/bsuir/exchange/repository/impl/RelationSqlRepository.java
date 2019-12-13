@@ -1,21 +1,27 @@
 package by.bsuir.exchange.repository.impl;
 
 import by.bsuir.exchange.bean.RelationBean;
-import by.bsuir.exchange.pool.exception.PoolOperationException;
-import by.bsuir.exchange.pool.exception.PoolTimeoutException;
+import by.bsuir.exchange.pool.ConnectionPool;
 import by.bsuir.exchange.provider.DataBaseAttributesProvider;
 import by.bsuir.exchange.repository.exception.RepositoryInitializationException;
-import by.bsuir.exchange.repository.exception.RepositoryOperationException;
 
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
 public class RelationSqlRepository extends SqlRepository<RelationBean> {
+    private static final String INSERT_QUERY =
+            "INSERT INTO relations (client_id, courier_id, relation) VALUES (?, ?, ?)";
 
     public RelationSqlRepository() throws RepositoryInitializationException {
         super();
+    }
+
+    public RelationSqlRepository(ConnectionPool pool){
+        super(pool);
     }
 
     @Override
@@ -51,30 +57,26 @@ public class RelationSqlRepository extends SqlRepository<RelationBean> {
     }
 
     @Override
-    public void add(RelationBean bean) throws RepositoryOperationException {
-        String template = "INSERT INTO relations (client_id, courier_id, relation) VALUES (?, ?, ?)";
-        try{
-            Connection connection = pool.getConnection();
-            PreparedStatement statement = connection.prepareStatement(template, Statement.RETURN_GENERATED_KEYS);
-            statement.setLong(1, bean.getClientId());
-            statement.setLong(2, bean.getCourierId());
-            statement.setString(3, bean.getRelation());
-            int affectedRows = statement.executeUpdate();
-            if (affectedRows == 0){
-                throw new RepositoryOperationException("Unable to perform operation");
-            }
-            ResultSet generatedKeys = statement.getGeneratedKeys();
-            if (generatedKeys.next()){
-                bean.setId(generatedKeys.getLong(1));
-            }
-            pool.releaseConnection(connection);
-        } catch (PoolTimeoutException | SQLException | PoolOperationException e) {
-            throw new RepositoryOperationException(e);
-        }
+    public String getAddQuery() {
+        return INSERT_QUERY;
     }
 
     @Override
-    public void update(RelationBean entity) throws RepositoryOperationException {
+    public void populateAddStatement(RelationBean entity, PreparedStatement statement) throws SQLException {
+        statement.setLong(1, entity.getClientId());
+        statement.setLong(2, entity.getCourierId());
+        statement.setString(3, entity.getRelation());
+    }
+
+    @Override
+    public String getUpdateQuery() {
         throw new UnsupportedOperationException();
     }
+
+    @Override
+    public void populateUpdateStatement(RelationBean entity, PreparedStatement statement) throws SQLException {
+        throw new UnsupportedOperationException();
+    }
+
+
 }

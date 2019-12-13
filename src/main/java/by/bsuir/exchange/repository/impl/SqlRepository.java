@@ -1,6 +1,6 @@
 package by.bsuir.exchange.repository.impl;
 
-import by.bsuir.exchange.manager.exception.ManagerOperationException;
+import by.bsuir.exchange.bean.Markable;
 import by.bsuir.exchange.pool.ConnectionPool;
 import by.bsuir.exchange.pool.GlobalConnectionPool;
 import by.bsuir.exchange.pool.exception.PoolDestructionException;
@@ -12,17 +12,13 @@ import by.bsuir.exchange.repository.exception.RepositoryInitializationException;
 import by.bsuir.exchange.repository.exception.RepositoryOperationException;
 import by.bsuir.exchange.specification.Specification;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.List;
 import java.util.Optional;
 
-//FIXME add uses predefined names of tables
 
-public abstract class SqlRepository<T> implements Repository<T, PreparedStatement, Connection> {
-    ConnectionPool pool;
+public abstract class SqlRepository<T extends Markable> implements Repository<T, PreparedStatement, Connection> {
+    private ConnectionPool pool;
     private Connection transactionConnection;
 
     SqlRepository() throws RepositoryInitializationException {
@@ -33,33 +29,8 @@ public abstract class SqlRepository<T> implements Repository<T, PreparedStatemen
         }
     }
 
-    public void startTransaction() throws ManagerOperationException {
-        try {
-            transactionConnection = pool.getConnection();
-            transactionConnection.setAutoCommit(false);
-        } catch (PoolTimeoutException | PoolOperationException | SQLException e) {
-            throw new ManagerOperationException(e);
-        }
-    }
-
-    public void abortTransaction() throws ManagerOperationException {
-        try {
-            transactionConnection.rollback();
-            transactionConnection.setAutoCommit(true);
-            pool.releaseConnection(transactionConnection);
-        } catch (PoolTimeoutException | SQLException e) {
-            throw new ManagerOperationException(e);
-        }
-    }
-
-    public void finishTransaction() throws ManagerOperationException {
-        try {
-            transactionConnection.commit();
-            transactionConnection.setAutoCommit(true);
-            pool.releaseConnection(transactionConnection);
-        } catch (PoolTimeoutException | SQLException e) {
-            throw new ManagerOperationException(e);
-        }
+    SqlRepository(ConnectionPool pool){
+        this.pool = pool;
     }
 
     @Override
@@ -73,7 +44,9 @@ public abstract class SqlRepository<T> implements Repository<T, PreparedStatemen
             ResultSet resultSet = preparedStatement.executeQuery();
             list = process(resultSet);
             pool.releaseConnection(connection);
-        } catch (Exception e) {                     //FIXME exception caught
+        } catch (PoolTimeoutException | SQLException | PoolOperationException e) {
+            throw new RepositoryOperationException(e);
+        } catch (Exception e) {
             throw new RepositoryOperationException(e);
         } finally {
             if (preparedStatement != null){
@@ -88,6 +61,109 @@ public abstract class SqlRepository<T> implements Repository<T, PreparedStatemen
     }
 
     public abstract Optional< List<T> > process(ResultSet resultSet) throws SQLException;
+    public abstract String getAddQuery();
+    public abstract void populateAddStatement(T entity, PreparedStatement statement) throws SQLException;
+    public abstract String getUpdateQuery();
+    public abstract void populateUpdateStatement(T entity, PreparedStatement statement) throws SQLException;
+
+    @Override
+    public void add(T entity) throws RepositoryOperationException {
+        String query = getAddQuery();
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try{
+            connection = pool.getConnection();
+            preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            populateAddStatement(entity, preparedStatement);
+            int affectedRows = preparedStatement.executeUpdate();
+            if (affectedRows == 0){
+                throw new RepositoryOperationException("Unable to perform operation");
+            }
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+            if (generatedKeys.next()){
+                entity.setId(generatedKeys.getLong(1));
+            }
+        } catch (PoolTimeoutException | SQLException | PoolOperationException e) {
+            throw new RepositoryOperationException(e);
+        }
+        finally {
+            if (connection != null){
+                try {
+                    pool.releaseConnection(connection);
+                } catch (PoolTimeoutException e) {
+                    e.printStackTrace();    //FIXME log
+                }
+            }
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void update(T entity) throws RepositoryOperationException {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        try{
+            String template = getUpdateQuery();
+            connection = pool.getConnection();
+            statement = connection.prepareStatement(template);
+            populateUpdateStatement(entity, statement);
+            statement.executeUpdate();
+        } catch (PoolTimeoutException | SQLException | PoolOperationException e) {
+            throw new RepositoryOperationException(e);
+        }finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null){
+                try {
+                    pool.releaseConnection(connection);
+                } catch (PoolTimeoutException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+
+
+    public void startTransaction() throws RepositoryOperationException {
+        try {
+            transactionConnection = pool.getConnection();
+            transactionConnection.setAutoCommit(false);
+        } catch (PoolTimeoutException | PoolOperationException | SQLException e) {
+            throw new RepositoryOperationException(e);
+        }
+    }
+
+    public void abortTransaction() throws RepositoryOperationException {
+        try {
+            transactionConnection.rollback();
+            transactionConnection.setAutoCommit(true);
+            pool.releaseConnection(transactionConnection);
+        } catch (PoolTimeoutException | SQLException e) {
+            throw new RepositoryOperationException(e);
+        }
+    }
+
+    public void finishTransaction() throws RepositoryOperationException {
+        try {
+            transactionConnection.commit();
+            transactionConnection.setAutoCommit(true);
+            pool.releaseConnection(transactionConnection);
+        } catch (PoolTimeoutException | SQLException e) {
+            throw new RepositoryOperationException(e);
+        }
+    }
 
     public void closeRepository() throws RepositoryOperationException {
         try {
@@ -97,7 +173,7 @@ public abstract class SqlRepository<T> implements Repository<T, PreparedStatemen
         }
     }
 
-    public <T2> SqlRepository<T> pack(SqlRepository<T2> other) throws RepositoryInitializationException { //Two only
+    public <T2 extends Markable> SqlRepository<T> pack(SqlRepository<T2> other) throws RepositoryInitializationException { //Two only
         try {
             if (this.pool == GlobalConnectionPool.getInstance()){
                 this.pool = ConnectionPool.getLocalPool();
@@ -111,4 +187,5 @@ public abstract class SqlRepository<T> implements Repository<T, PreparedStatemen
         }
         return this;
     }
+
 }

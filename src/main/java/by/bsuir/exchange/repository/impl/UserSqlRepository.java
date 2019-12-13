@@ -1,6 +1,7 @@
 package by.bsuir.exchange.repository.impl;
 
 import by.bsuir.exchange.bean.UserBean;
+import by.bsuir.exchange.pool.ConnectionPool;
 import by.bsuir.exchange.pool.exception.PoolOperationException;
 import by.bsuir.exchange.pool.exception.PoolTimeoutException;
 import by.bsuir.exchange.provider.DataBaseAttributesProvider;
@@ -13,9 +14,15 @@ import java.util.List;
 import java.util.Optional;
 
 public class UserSqlRepository extends SqlRepository<UserBean> {
+    private static String INSERT_QUERY = "INSERT INTO users (email, password, role, archival) VALUES (?, ?, ?, ?)";
+    private static String UPDATE_QUERY = "UPDATE users SET archival=? WHERE id=?";
 
     public UserSqlRepository() throws RepositoryInitializationException {
         super();
+    }
+
+    public UserSqlRepository(ConnectionPool pool){
+        super(pool);
     }
 
     @Override
@@ -54,41 +61,27 @@ public class UserSqlRepository extends SqlRepository<UserBean> {
     }
 
     @Override
-    public void add(UserBean user) throws RepositoryOperationException {    //FIXME close statement
-        String template = "INSERT INTO users (email, password, role, archival) VALUES (?, ?, ?, ?)";
-        try{
-            Connection connection = pool.getConnection();
-            PreparedStatement statement = connection.prepareStatement(template, Statement.RETURN_GENERATED_KEYS);
-            statement.setString(1, user.getEmail());
-            statement.setString(2, user.getPassword());
-            statement.setString(3, user.getRole().toUpperCase());
-            statement.setBoolean(4, user.getArchival());
-            int affectedRows = statement.executeUpdate();
-            if (affectedRows == 0){
-                throw new RepositoryOperationException("Unable to perform operation");
-            }
-            ResultSet generatedKeys = statement.getGeneratedKeys();
-            if (generatedKeys.next()){
-                user.setId(generatedKeys.getLong(1));
-            }
-            pool.releaseConnection(connection);
-        } catch (PoolTimeoutException | SQLException | PoolOperationException e) {
-            throw new RepositoryOperationException(e);
-        }
+    public String getAddQuery() {
+        return INSERT_QUERY;
     }
 
     @Override
-    public void update(UserBean entity) throws RepositoryOperationException {
-        String template = "UPDATE users SET archival=? WHERE id=?";
-        try{
-            Connection connection = pool.getConnection();
-            PreparedStatement statement = connection.prepareStatement(template);
-            statement.setBoolean(1, entity.getArchival());
-            statement.setLong(2, entity.getId());
-            statement.executeUpdate();
-            pool.releaseConnection(connection);
-        } catch (PoolTimeoutException | SQLException | PoolOperationException e) {
-            throw new RepositoryOperationException(e);
-        }
+    public void populateAddStatement(UserBean user, PreparedStatement statement) throws SQLException {
+        statement.setString(1, user.getEmail());
+        statement.setString(2, user.getPassword());
+        statement.setString(3, user.getRole().toUpperCase());
+        statement.setBoolean(4, user.getArchival());
     }
+
+    @Override
+    public String getUpdateQuery() {
+        return UPDATE_QUERY;
+    }
+
+    @Override
+    public void populateUpdateStatement(UserBean user, PreparedStatement statement) throws SQLException {
+        statement.setBoolean(1, user.getArchival());
+        statement.setLong(2, user.getId());
+    }
+
 }

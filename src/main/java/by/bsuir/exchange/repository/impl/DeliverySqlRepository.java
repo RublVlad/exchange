@@ -1,6 +1,7 @@
 package by.bsuir.exchange.repository.impl;
 
 import by.bsuir.exchange.bean.DeliveryBean;
+import by.bsuir.exchange.pool.ConnectionPool;
 import by.bsuir.exchange.pool.GlobalConnectionPool;
 import by.bsuir.exchange.pool.exception.PoolInitializationException;
 import by.bsuir.exchange.pool.exception.PoolOperationException;
@@ -15,9 +16,17 @@ import java.util.List;
 import java.util.Optional;
 
 public class DeliverySqlRepository extends SqlRepository<DeliveryBean> {
+    private static final String INSERT_QUERY =
+            "INSERT INTO deliveries (client_id, client_finished, courier_id, courier_finished, archival) VALUES (?, ?, ?, ?, ?)";
+    private static final String UPDATE_QUERY =
+            "UPDATE deliveries SET client_finished=?, courier_finished=?, archival=? WHERE id=?";
 
     public DeliverySqlRepository() throws RepositoryInitializationException {
         super();
+    }
+
+    public DeliverySqlRepository(ConnectionPool pool){
+        super(pool);
     }
 
     @Override
@@ -61,44 +70,30 @@ public class DeliverySqlRepository extends SqlRepository<DeliveryBean> {
     }
 
     @Override
-    public void add(DeliveryBean bean) throws RepositoryOperationException {
-        String template = "INSERT INTO deliveries (client_id, client_finished, courier_id, courier_finished, archival) VALUES (?, ?, ?, ?, ?)";
-        try{
-            Connection connection = pool.getConnection();
-            PreparedStatement statement = connection.prepareStatement(template, Statement.RETURN_GENERATED_KEYS);
-            statement.setLong(1, bean.getClientId());
-            statement.setBoolean(2, bean.getClientFinished());
-            statement.setLong(3, bean.getCourierId());
-            statement.setBoolean(4, bean.getCourierFinished());
-            statement.setBoolean(5, bean.getArchival());
-            int affectedRows = statement.executeUpdate();
-            if (affectedRows == 0){
-                throw new RepositoryOperationException("Unable to perform operation");
-            }
-            ResultSet generatedKeys = statement.getGeneratedKeys();
-            if (generatedKeys.next()){
-                bean.setId(generatedKeys.getLong(1));
-            }
-            pool.releaseConnection(connection);
-        } catch (PoolTimeoutException | SQLException | PoolOperationException e) {
-            throw new RepositoryOperationException(e);
-        }
+    public String getAddQuery() {
+        return INSERT_QUERY;
     }
 
     @Override
-    public void update(DeliveryBean entity) throws RepositoryOperationException {
-        String template = "UPDATE deliveries SET client_finished=?, courier_finished=?, archival=? WHERE id=?";
-        try{
-            Connection connection = pool.getConnection();
-            PreparedStatement statement = connection.prepareStatement(template);
-            statement.setBoolean(1, entity.getClientFinished());
-            statement.setBoolean(2, entity.getCourierFinished());
-            statement.setBoolean(3, entity.getArchival());
-            statement.setLong(4, entity.getId());
-            statement.executeUpdate();
-            pool.releaseConnection(connection);
-        } catch (PoolTimeoutException | SQLException | PoolOperationException e) {
-            throw new RepositoryOperationException(e);
-        }
+    public void populateAddStatement(DeliveryBean entity, PreparedStatement statement) throws SQLException {
+        statement.setLong(1, entity.getClientId());
+        statement.setBoolean(2, entity.getClientFinished());
+        statement.setLong(3, entity.getCourierId());
+        statement.setBoolean(4, entity.getCourierFinished());
+        statement.setBoolean(5, entity.getArchival());
     }
+
+    @Override
+    public String getUpdateQuery() {
+        return UPDATE_QUERY;
+    }
+
+    @Override
+    public void populateUpdateStatement(DeliveryBean entity, PreparedStatement statement) throws SQLException {
+        statement.setBoolean(1, entity.getClientFinished());
+        statement.setBoolean(2, entity.getCourierFinished());
+        statement.setBoolean(3, entity.getArchival());
+        statement.setLong(4, entity.getId());
+    }
+
 }
