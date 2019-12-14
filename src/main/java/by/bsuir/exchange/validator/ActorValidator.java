@@ -36,7 +36,7 @@ public class ActorValidator {
     }
 
     private static boolean validateLikes(long likes){
-        return likes > 0;
+        return likes >= 0;
     }
 
     private static boolean validateBalance(double balance){
