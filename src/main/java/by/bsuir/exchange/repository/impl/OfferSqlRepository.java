@@ -4,6 +4,7 @@ import by.bsuir.exchange.bean.OfferBean;
 import by.bsuir.exchange.pool.ConnectionPool;
 import by.bsuir.exchange.provider.DataBaseAttributesProvider;
 import by.bsuir.exchange.repository.exception.RepositoryInitializationException;
+import by.bsuir.exchange.tag.RepositoryTagEnum;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -25,6 +26,7 @@ public class OfferSqlRepository extends SqlRepository<OfferBean> {
 
     public OfferSqlRepository(ConnectionPool pool){
         super(pool);
+        this.tag = RepositoryTagEnum.OFFER_REPOSITORY;
     }
 
     @Override

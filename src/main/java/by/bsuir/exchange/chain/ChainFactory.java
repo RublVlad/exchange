@@ -6,6 +6,7 @@ import by.bsuir.exchange.command.CommandEnum;
 import by.bsuir.exchange.entity.RoleEnum;
 import by.bsuir.exchange.manager.*;
 import by.bsuir.exchange.manager.exception.ManagerInitializationException;
+import by.bsuir.exchange.manager.exception.ManagerOperationException;
 import by.bsuir.exchange.provider.PageAttributesNameProvider;
 import by.bsuir.exchange.provider.RequestAttributesNameProvider;
 import by.bsuir.exchange.provider.SessionAttributesNameProvider;
@@ -13,7 +14,10 @@ import by.bsuir.exchange.validator.ActorValidator;
 import by.bsuir.exchange.validator.OfferValidator;
 import by.bsuir.exchange.validator.UserValidator;
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.lang.reflect.InvocationTargetException;
 
@@ -58,10 +62,16 @@ public class ChainFactory { //Loads on servlet initialization
     private static CommandHandler isCourierSession;
     private static CommandHandler isCourierRequest;
 
+    /*Loggers*/
+    private static CommandHandler permissionLogger;
+    private static CommandHandler validatorLogger;
+    private static CommandHandler managerLogger;
+
     static {
         initCheckers();
         initValidators();
         initBeanCreators();
+        initLoggers();
         createEmptyChain();
         try {
             initManagers();
@@ -159,7 +169,12 @@ public class ChainFactory { //Loads on servlet initialization
             try {
                 BeanUtils.populate(bean, request.getParameterMap());
             } catch (IllegalAccessException | InvocationTargetException e) {
-                e.printStackTrace();
+                Logger logger = LogManager.getRootLogger();
+                HttpSession session = request.getSession();
+                String role = (String) session.getAttribute(SessionAttributesNameProvider.ROLE);
+                long id = (long) session.getAttribute(SessionAttributesNameProvider.ID);
+                String log = String.format("Failed to populate bean for %s with id - %d", role, id);
+                logger.warn(log, e);
             }
             request.setAttribute(attribute, bean);
             return true;
@@ -172,18 +187,21 @@ public class ChainFactory { //Loads on servlet initialization
             UserBean bean = (UserBean) request.getAttribute(attribute);
             return UserValidator.validate(bean);
         };
+        userBeanValidator = validatorLogger.chain(userBeanValidator);
 
         actorBeanValidator = (request, command) -> {
             String attribute = RequestAttributesNameProvider.ACTOR_ATTRIBUTE;
             ActorBean bean = (ActorBean) request.getAttribute(attribute);
             return ActorValidator.validate(bean);
         };
+        actorBeanValidator = validatorLogger.chain(actorBeanValidator);
 
         offerBeanValidator = (request, command) -> {
             String attribute = RequestAttributesNameProvider.OFFER_ATTRIBUTE;
             OfferBean  bean = (OfferBean) request.getAttribute(attribute);
             return OfferValidator.validate(bean);
         };
+        offerBeanValidator = validatorLogger.chain(offerBeanValidator);
     }
 
     private static void initCheckers(){
@@ -193,6 +211,7 @@ public class ChainFactory { //Loads on servlet initialization
             RoleEnum role = (RoleEnum) session.getAttribute(attribute);
             return PermissionChecker.getInstance().checkPermission(role, command);
         };
+        permissionChecker = permissionLogger.chain(permissionChecker);
 
         isCourierSession = (request, command1) -> {
             HttpSession session = request.getSession();
@@ -368,4 +387,51 @@ public class ChainFactory { //Loads on servlet initialization
             return getBeanCreator(delivery, RequestAttributesNameProvider.RELATION_ATTRIBUTE).handle(request, command);
         };
     }
+
+    private static void initLoggers() {
+        String permissionBeforeLog = "Checking for permissions: %s with id - %d";
+        String permissionFailureLog = "Actor failed to pass permission check: %s with id - %d";
+        permissionLogger = getLoggerCommandHandler(permissionBeforeLog, permissionFailureLog);
+
+        String managerBeforeLog = "Start to perform command for %s with id - %d";
+        String managerFailureLog = "Failed to perform command for: %s with id - %d";
+        managerLogger = getLoggerCommandHandler(managerBeforeLog, managerFailureLog);
+
+        String validatorBeforeLog = "Start to validate data for %s with id - %d";
+        String validatorFailureLog = "Failed to validate data for: %s with id - %d";
+        validatorLogger = getLoggerCommandHandler(validatorBeforeLog, validatorFailureLog);
+    }
+
+    /*Expects log arguments to accept role string and role id*/
+    private static CommandHandler getLoggerCommandHandler(String logBeforeCommand, String logOnFailure){
+        return new CommandHandler() {
+            private Logger logger = LogManager.getRootLogger();
+
+            @Override
+            public CommandHandler chain(CommandHandler other){
+                return (request, command) -> {
+                    boolean status = other.handle(request, command);
+                    if (!status){
+                        HttpSession session = request.getSession();
+                        String role = (String) session.getAttribute(SessionAttributesNameProvider.ROLE);
+                        long id = (long) session.getAttribute(SessionAttributesNameProvider.ID);
+                        String log = String.format(logOnFailure, role, id);
+                        logger.warn(log);
+                    }
+                    return status;
+                };
+            }
+
+            @Override
+            public boolean handle(HttpServletRequest request, CommandEnum command) {
+                HttpSession session = request.getSession();
+                String role = (String) session.getAttribute(SessionAttributesNameProvider.ROLE);
+                long id = (long) session.getAttribute(SessionAttributesNameProvider.ID);
+                String log = String.format(logBeforeCommand, role, id);
+                logger.info(log);
+                return true;
+            }
+        };
+    }
+
 }

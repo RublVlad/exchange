@@ -15,6 +15,8 @@ import by.bsuir.exchange.specification.Specification;
 import by.bsuir.exchange.specification.actor.ActorByUserIdSpecification;
 import by.bsuir.exchange.specification.actor.factory.ActorIdSqlSpecificationFactory;
 import by.bsuir.exchange.specification.actor.factory.ActorUserIdSqlSpecificationFactory;
+import by.bsuir.exchange.tag.ManagerTagEnum;
+import by.bsuir.exchange.tag.RepositoryTagEnum;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -31,6 +33,7 @@ public class ActorManager extends AbstractManager<ActorBean> implements CommandH
         try {
             this.repository = ActorSqlRepositoryFactory.getRepository(role);
             this.role = role;
+            this.tag = ManagerTagEnum.ACTOR_MANAGER;
         } catch (RepositoryInitializationException e) {
             throw new ManagerInitializationException(e);
         }

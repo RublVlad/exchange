@@ -18,6 +18,8 @@ import by.bsuir.exchange.specification.Specification;
 import by.bsuir.exchange.specification.delivery.DeliveryByActorIdSpecification;
 import by.bsuir.exchange.specification.delivery.DeliveryByClientIdSpecification;
 import by.bsuir.exchange.specification.delivery.DeliveryByCourierIdSpecification;
+import by.bsuir.exchange.tag.ManagerTagEnum;
+import by.bsuir.exchange.tag.RepositoryTagEnum;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -32,6 +34,7 @@ public class DeliveryManager extends AbstractManager<DeliveryBean> implements Co
     public DeliveryManager() throws ManagerInitializationException {
         try {
             this.repository = new DeliverySqlRepository();
+            this.tag = ManagerTagEnum.DELIVERY__MANAGER;
         } catch (RepositoryInitializationException e) {
             throw new ManagerInitializationException(e);
         }

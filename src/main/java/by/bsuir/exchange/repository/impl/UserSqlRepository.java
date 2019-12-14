@@ -7,6 +7,7 @@ import by.bsuir.exchange.pool.exception.PoolTimeoutException;
 import by.bsuir.exchange.provider.DataBaseAttributesProvider;
 import by.bsuir.exchange.repository.exception.RepositoryInitializationException;
 import by.bsuir.exchange.repository.exception.RepositoryOperationException;
+import by.bsuir.exchange.tag.RepositoryTagEnum;
 
 import java.sql.*;
 import java.util.LinkedList;
@@ -14,11 +15,12 @@ import java.util.List;
 import java.util.Optional;
 
 public class UserSqlRepository extends SqlRepository<UserBean> {
-    private static String INSERT_QUERY = "INSERT INTO users (email, password, role, archival) VALUES (?, ?, ?, ?)";
-    private static String UPDATE_QUERY = "UPDATE users SET archival=? WHERE id=?";
+    private static final String INSERT_QUERY = "INSERT INTO users (email, password, role, archival) VALUES (?, ?, ?, ?)";
+    private static final String UPDATE_QUERY = "UPDATE users SET archival=? WHERE id=?";
 
     public UserSqlRepository() throws RepositoryInitializationException {
         super();
+        this.tag = RepositoryTagEnum.USER_REPOSITORY;
     }
 
     public UserSqlRepository(ConnectionPool pool){

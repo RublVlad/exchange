@@ -17,6 +17,8 @@ import by.bsuir.exchange.repository.impl.OfferSqlRepository;
 import by.bsuir.exchange.specification.Specification;
 import by.bsuir.exchange.specification.offer.OfferAllSpecification;
 import by.bsuir.exchange.specification.offer.OfferByCourierIdSpecification;
+import by.bsuir.exchange.tag.ManagerTagEnum;
+import by.bsuir.exchange.tag.RepositoryTagEnum;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -31,6 +33,7 @@ public class OfferManager extends AbstractManager<OfferBean> implements CommandH
     public OfferManager() throws ManagerInitializationException {
         try {
             this.repository = new OfferSqlRepository();
+            this.tag = ManagerTagEnum.OFFER_MANAGER;
         } catch (RepositoryInitializationException e) {
             throw new ManagerInitializationException(e);
         }

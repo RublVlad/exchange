@@ -5,6 +5,7 @@ import by.bsuir.exchange.entity.RoleEnum;
 import by.bsuir.exchange.pool.ConnectionPool;
 import by.bsuir.exchange.provider.DataBaseAttributesProvider;
 import by.bsuir.exchange.repository.exception.RepositoryInitializationException;
+import by.bsuir.exchange.tag.RepositoryTagEnum;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,9 +24,10 @@ public class ActorSqlRepository extends SqlRepository<ActorBean> {
         this.updateTemplate = updateTemplate;
         this.insertTemplate = insertTemplate;
         this.role = role;
+        this.tag = RepositoryTagEnum.ACTOR_REPOSITORY;
     }
 
-    public ActorSqlRepository(ConnectionPool pool, String updateTemplate, String insertTemplate, RoleEnum role) throws RepositoryInitializationException {
+    public ActorSqlRepository(ConnectionPool pool, String updateTemplate, String insertTemplate, RoleEnum role) {
         super(pool);
         this.updateTemplate = updateTemplate;
         this.insertTemplate = insertTemplate;

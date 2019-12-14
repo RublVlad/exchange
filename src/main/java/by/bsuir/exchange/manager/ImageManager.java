@@ -14,6 +14,8 @@ import by.bsuir.exchange.repository.exception.RepositoryOperationException;
 import by.bsuir.exchange.repository.impl.ImageSqlRepository;
 import by.bsuir.exchange.specification.Specification;
 import by.bsuir.exchange.specification.image.ImageByRoleIdSpecification;
+import by.bsuir.exchange.tag.ManagerTagEnum;
+import by.bsuir.exchange.tag.RepositoryTagEnum;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Connection;
@@ -26,6 +28,7 @@ public class ImageManager extends AbstractManager<ImageBean> implements CommandH
     public ImageManager() throws ManagerInitializationException {
         try {
             this.repository = new ImageSqlRepository();
+            this.tag = ManagerTagEnum.IMAGE_MANAGER;
         } catch (RepositoryInitializationException e) {
             throw new ManagerInitializationException(e);
         }

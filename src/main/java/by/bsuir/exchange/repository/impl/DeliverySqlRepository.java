@@ -9,6 +9,7 @@ import by.bsuir.exchange.pool.exception.PoolTimeoutException;
 import by.bsuir.exchange.provider.DataBaseAttributesProvider;
 import by.bsuir.exchange.repository.exception.RepositoryInitializationException;
 import by.bsuir.exchange.repository.exception.RepositoryOperationException;
+import by.bsuir.exchange.tag.RepositoryTagEnum;
 
 import java.sql.*;
 import java.util.LinkedList;
@@ -23,6 +24,7 @@ public class DeliverySqlRepository extends SqlRepository<DeliveryBean> {
 
     public DeliverySqlRepository() throws RepositoryInitializationException {
         super();
+        this.tag = RepositoryTagEnum.DELIVERY_REPOSITORY;
     }
 
     public DeliverySqlRepository(ConnectionPool pool){
