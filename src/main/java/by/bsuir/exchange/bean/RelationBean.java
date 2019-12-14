@@ -1,5 +1,7 @@
 package by.bsuir.exchange.bean;
 
+import by.bsuir.exchange.entity.RelationEnum;
+
 public class RelationBean implements Markable{
     private long id;
     private long clientId;
@@ -7,6 +9,7 @@ public class RelationBean implements Markable{
     private String relation;
 
     public RelationBean() {
+        relation = RelationEnum.NONE.toString();
     }
 
     public RelationBean(long id, long clientId, long courierId, String relation) {
