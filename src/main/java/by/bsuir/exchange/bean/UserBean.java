@@ -1,5 +1,7 @@
 package by.bsuir.exchange.bean;
 
+import by.bsuir.exchange.entity.RoleEnum;
+
 public class UserBean implements Markable{
     private long id;
     private String email;
@@ -8,6 +10,7 @@ public class UserBean implements Markable{
     private boolean archival;
 
     public UserBean() {
+        role = RoleEnum.GUEST.toString();
     }
 
     public UserBean(long id, String email, String password, String role, boolean archival) {

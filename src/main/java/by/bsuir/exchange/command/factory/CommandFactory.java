@@ -14,7 +14,7 @@ import static by.bsuir.exchange.provider.ConfigurationProvider.*;
 import static by.bsuir.exchange.provider.PageAttributesNameProvider.COMMAND;
 
 public class CommandFactory {
-    private static final int N_COMMANDS = 21;
+    private static final int N_COMMANDS = 24;
     private static final String FEED_BACK_TEMPLATE = "/controller?command=%s";
 
     private static String[] successPages;
@@ -53,6 +53,9 @@ public class CommandFactory {
 
         successPages[CommandEnum.UPDATE_PROFILE.ordinal()] = ConfigurationProvider.getProperty(PROFILE_PAGE_PATH);
         failurePages[CommandEnum.UPDATE_PROFILE.ordinal()] = ConfigurationProvider.getProperty(ERROR_PAGE_PATH);
+
+        successPages[CommandEnum.UPDATE_WALLET.ordinal()] = ConfigurationProvider.getProperty(PROFILE_PAGE_PATH);
+        failurePages[CommandEnum.UPDATE_WALLET.ordinal()] = ConfigurationProvider.getProperty(ERROR_PAGE_PATH);
 
         successPages[CommandEnum.UPDATE_AVATAR.ordinal()] = ConfigurationProvider.getProperty(PROFILE_PAGE_PATH);
         failurePages[CommandEnum.UPDATE_AVATAR.ordinal()] = ConfigurationProvider.getProperty(ERROR_PAGE_PATH);

@@ -76,14 +76,6 @@ public class ActorManager extends AbstractManager<ActorBean> implements CommandH
                     status = getDeliveries(request);
                     break;
                 }
-                case REQUEST_DELIVERY:{
-                    status = requestDelivery(request);
-                    break;
-                }
-                case FINISH_DELIVERY: {
-                    status = finishDelivery(request);
-                    break;
-                }
                 case LIKE_COURIER: {
                     status = likeCourier(request);
                     break;
@@ -177,31 +169,6 @@ public class ActorManager extends AbstractManager<ActorBean> implements CommandH
         return status;
     }
 
-
-    private boolean finishDelivery(HttpServletRequest request) throws RepositoryOperationException {
-        DeliveryBean delivery = (DeliveryBean) request.getAttribute(RequestAttributesNameProvider.DELIVERY_ATTRIBUTE);
-        if (delivery.isFinished()){
-            long id = role == RoleEnum.COURIER? delivery.getCourierId() : delivery.getClientId();
-            Specification<ActorBean, PreparedStatement, Connection> specification =
-                    ActorIdSqlSpecificationFactory.getSpecification(role, id);
-            Optional<List<ActorBean>> optionalActors = repository.find(specification);
-            if (optionalActors.isPresent()){
-                OfferBean offer = (OfferBean)request.getAttribute(RequestAttributesNameProvider.OFFER_ATTRIBUTE);
-                double price = offer.getPrice();
-                ActorBean actor = optionalActors.get().get(0);
-                double balance = actor.getBalance();
-                if (role == RoleEnum.CLIENT){
-                    balance -= price;
-                }else {
-                    balance += price;
-                }
-                actor.setBalance(balance);
-                repository.update(actor);
-            }
-        }
-        return true;
-    }
-
     private boolean getDeliveries(HttpServletRequest request) throws RepositoryOperationException {
         List<DeliveryBean> deliveries = (List<DeliveryBean>) request.getAttribute(RequestAttributesNameProvider.DELIVERY_LIST_ATTRIBUTE);
         List<ActorBean> actors = new LinkedList<>();
@@ -222,20 +189,6 @@ public class ActorManager extends AbstractManager<ActorBean> implements CommandH
                                                         : RequestAttributesNameProvider.COURIER_LIST;
         request.setAttribute(actorAttributeList, actors);
         return true;
-    }
-
-    private boolean requestDelivery(HttpServletRequest request) throws RepositoryOperationException {
-        DeliveryBean delivery = (DeliveryBean) request.getAttribute(RequestAttributesNameProvider.DELIVERY_ATTRIBUTE);
-        long id = role == RoleEnum.COURIER? delivery.getCourierId() : delivery.getClientId();
-        Specification<ActorBean, PreparedStatement, Connection> specification = ActorIdSqlSpecificationFactory.getSpecification(role, id);
-        boolean status = false;
-        Optional< List<ActorBean> > optionalCouriers = repository.find(specification);
-        if (optionalCouriers.isPresent()){
-            ActorBean courier = optionalCouriers.get().get(0);
-            request.setAttribute(RequestAttributesNameProvider.ACTOR_ATTRIBUTE, courier);
-            status = true;
-        }
-        return status;
     }
 
     private boolean login(HttpServletRequest request) throws RepositoryOperationException {
@@ -266,7 +219,6 @@ public class ActorManager extends AbstractManager<ActorBean> implements CommandH
 
         ActorBean actor = (ActorBean) request.getAttribute(RequestAttributesNameProvider.ACTOR_ATTRIBUTE);
         actor.setUserId(userId);
-        actor.setBalance(ZERO);
         repository.add(actor);
         request.setAttribute(RequestAttributesNameProvider.ACTOR_ATTRIBUTE, actor);
         HttpSession session = request.getSession();

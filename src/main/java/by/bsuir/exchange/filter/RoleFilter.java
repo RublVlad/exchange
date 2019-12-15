@@ -13,7 +13,7 @@ import java.io.IOException;
 @WebFilter(urlPatterns = {"/*"})
 public class RoleFilter implements Filter {
     private static final RoleEnum DEFAULT_ROLE = RoleEnum.GUEST;
-
+    private static final long MOCK_ID = -1;
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
@@ -21,6 +21,7 @@ public class RoleFilter implements Filter {
         HttpSession session = req.getSession();
         if (session.getAttribute(SessionAttributesNameProvider.ROLE) == null){        //FIXME should be only valid roles
             session.setAttribute(SessionAttributesNameProvider.ROLE, DEFAULT_ROLE);
+            session.setAttribute(SessionAttributesNameProvider.ID, MOCK_ID);
         }
         filterChain.doFilter(servletRequest, servletResponse);
     }

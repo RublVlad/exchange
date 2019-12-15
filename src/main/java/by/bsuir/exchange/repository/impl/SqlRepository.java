@@ -50,6 +50,7 @@ public abstract class SqlRepository<T extends Markable> implements Repository<T,
 
     SqlRepository(ConnectionPool pool){
         this.pool = pool;
+        this.logger = LogManager.getRootLogger();
     }
 
     @Override

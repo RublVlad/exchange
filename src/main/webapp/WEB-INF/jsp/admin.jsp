@@ -76,7 +76,7 @@
                             <!--Text-->
                             <p class="card-text"><span>Email: ${elem.email}</span></p>
                             <p class="card-text"><span>Role: ${elem.role}</span></p>
-                            <p class="card-text"><span>Balance: ${requestScope.actor_map[elem.id].balance}</span></p>
+                            <p class="card-text"><span>Balance: ${requestScope.wallet_map[elem.id].balance}</span></p>
                             <a href="<c:url value="/controller?command=delete_user&id=${elem.id}&role=${elem.role}"/>" class="btn btn-indigo">Delete</a>
                         </div>
                     </div>

@@ -4,7 +4,6 @@ public class ActorBean implements Markable{
     private long id;
     private String name;
     private String surname;
-    private double balance;
     private long userId;
     private long likes;
     private boolean archival;
@@ -12,20 +11,18 @@ public class ActorBean implements Markable{
     public ActorBean() {
     }
 
-    public ActorBean(long id, String name, String surname, double balance, long userId, boolean archival) {
+    public ActorBean(long id, String name, String surname, long userId, boolean archival) {
         this.id = id;
         this.name = name;
         this.surname = surname;
-        this.balance = balance;
         this.userId = userId;
         this.archival = archival;
     }
 
-    public ActorBean(long id, String name, String surname, double balance, long userId, long likes, boolean archival) {
+    public ActorBean(long id, String name, String surname, long userId, long likes, boolean archival) {
         this.id = id;
         this.name = name;
         this.surname = surname;
-        this.balance = balance;
         this.userId = userId;
         this.likes = likes;
         this.archival = archival;
@@ -45,15 +42,6 @@ public class ActorBean implements Markable{
 
     public void setLikes(long likes) {
         this.likes = likes;
-    }
-
-
-    public double getBalance() {
-        return balance;
-    }
-
-    public void setBalance(double balance) {
-        this.balance = balance;
     }
 
     public long getId() {

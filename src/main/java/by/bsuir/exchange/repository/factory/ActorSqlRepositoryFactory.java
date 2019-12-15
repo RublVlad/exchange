@@ -7,10 +7,10 @@ import by.bsuir.exchange.repository.impl.ActorSqlRepository;
 import by.bsuir.exchange.repository.impl.SqlRepository;
 
 public class ActorSqlRepositoryFactory {
-    private static final String UPDATE_TEMPLATE_CLIENT = "UPDATE %s SET name=?, surname=?, balance=?, archival=? WHERE id=?";
-    private static final String INSERT_TEMPLATE_CLIENT = "INSERT INTO %s (name, surname, balance, archival, user_id) VALUES (?, ?, ?, ?, ?)";
-    private static final String UPDATE_TEMPLATE_COURIER = "UPDATE %s SET name=?, surname=?, balance=?, likes=?, archival=? WHERE id=?";
-    private static final String INSERT_TEMPLATE_COURIER = "INSERT INTO %s (name, surname, balance, likes, archival, user_id) VALUES (?, ?, ?, ?, ?, ?)";
+    private static final String UPDATE_TEMPLATE_CLIENT = "UPDATE %s SET name=?, surname=?, archival=? WHERE id=?";
+    private static final String INSERT_TEMPLATE_CLIENT = "INSERT INTO %s (name, surname, archival, user_id) VALUES (?, ?, ?, ?)";
+    private static final String UPDATE_TEMPLATE_COURIER = "UPDATE %s SET name=?, surname=?, likes=?, archival=? WHERE id=?";
+    private static final String INSERT_TEMPLATE_COURIER = "INSERT INTO %s (name, surname, likes, archival, user_id) VALUES (?, ?, ?, ?, ?)";
 
 
     public static SqlRepository<ActorBean> getRepository(RoleEnum role) throws RepositoryInitializationException {

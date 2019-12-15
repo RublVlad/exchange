@@ -3,6 +3,7 @@ package by.bsuir.exchange.manager;
 import by.bsuir.exchange.bean.Markable;
 import by.bsuir.exchange.chain.CommandHandler;
 import by.bsuir.exchange.command.CommandEnum;
+import by.bsuir.exchange.entity.RoleEnum;
 import by.bsuir.exchange.manager.exception.ManagerOperationException;
 import by.bsuir.exchange.provider.SessionAttributesNameProvider;
 import by.bsuir.exchange.repository.exception.RepositoryInitializationException;
@@ -29,11 +30,11 @@ public abstract class AbstractManager<T extends Markable> implements CommandHand
     public static <T extends Markable> AbstractManager<T> createTransactionalManager(AbstractManager<T> manager){
         AbstractManager<T> transactional = new AbstractManager<>() {
             private static final String START_TRANSACTION_LOG_TEMPLATE =
-                    "Start to perform transaction for %s with id - %d. Command : %s, Repository : %s";
+                    "Start to perform transaction for %s with id - %d. Command : %s, Manager : %s";
             private static final String SUCCESS_TRANSACTION_LOG_TEMPLATE =
-                    "Transaction completed for %s with id - %d. Command : %s, Repository : %s";
+                    "Transaction completed for %s with id - %d. Command : %s, Manager : %s";
             private static final String ABORT_TRANSACTION_LOG_TEMPLATE =
-                    "Transaction aborted for %s with id - %d. Command : %s, Repository : %s";
+                    "Transaction aborted for %s with id - %d. Command : %s, Manager : %s";
             private Logger logger = LogManager.getRootLogger();
 
 
@@ -42,7 +43,7 @@ public abstract class AbstractManager<T extends Markable> implements CommandHand
                 boolean status;
                 try{
                     HttpSession session = request.getSession();
-                    String role = (String) session.getAttribute(SessionAttributesNameProvider.ROLE);
+                    RoleEnum role = (RoleEnum) session.getAttribute(SessionAttributesNameProvider.ROLE);
                     long id = (long) session.getAttribute(SessionAttributesNameProvider.ID);
                     String commandString = command.toString();
                     String repositoryTag = getTag();

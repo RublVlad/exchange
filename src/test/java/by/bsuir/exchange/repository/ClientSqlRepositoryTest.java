@@ -3,7 +3,6 @@ package by.bsuir.exchange.repository;
 import by.bsuir.exchange.bean.ActorBean;
 import by.bsuir.exchange.entity.RoleEnum;
 import by.bsuir.exchange.pool.ConnectionPool;
-import by.bsuir.exchange.repository.exception.RepositoryInitializationException;
 import by.bsuir.exchange.repository.exception.RepositoryOperationException;
 import by.bsuir.exchange.repository.impl.ActorSqlRepository;
 import by.bsuir.exchange.repository.impl.SqlRepository;
@@ -25,10 +24,10 @@ public class ClientSqlRepositoryTest extends SqlRepositoryTest{
     private static final String REPOSITORY_ERROR = "Repository error";
 
     private static final String INSERT_QUERY =
-            "INSERT INTO client (name, surname, balance, archival, user_id) VALUES (?, ?, ?, ?, ?)";
+            "INSERT INTO client (name, surname, archival, user_id) VALUES (?, ?, ?,  ?)";
 
     private static final String UPDATE_QUERY =
-            "UPDATE client SET name=?, surname=?, balance=?, archival=? WHERE id=?";
+            "UPDATE client SET name=?, surname=?, archival=? WHERE id=?";
 
 
     private static final ActorBean[] clients = {
@@ -61,9 +60,8 @@ public class ClientSqlRepositoryTest extends SqlRepositoryTest{
                 statement = connection.prepareStatement(INSERT_QUERY);
                 statement.setString(1, actor.getName());
                 statement.setString(2, actor.getSurname());
-                statement.setDouble(3, actor.getBalance());
-                statement.setBoolean(4, actor.getArchival());
-                statement.setLong(5, actor.getUserId());
+                statement.setBoolean(3, actor.getArchival());
+                statement.setLong(4, actor.getUserId());
                 statement.executeUpdate();
             }
             assert connection != null;
@@ -88,11 +86,7 @@ public class ClientSqlRepositoryTest extends SqlRepositoryTest{
                 logger.info("Close pool");
             }
         };
-        try {
-            repository = new ActorSqlRepository(pool,UPDATE_QUERY, INSERT_QUERY, RoleEnum.CLIENT);
-        } catch (RepositoryInitializationException e) {
-            logger.fatal("Unable to setup a repository");
-        }
+        repository = new ActorSqlRepository(pool,UPDATE_QUERY, INSERT_QUERY, RoleEnum.CLIENT);
     }
 
     @Test

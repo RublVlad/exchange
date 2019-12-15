@@ -45,7 +45,7 @@
 
               <h2><span>${requestScope.actor.name}</span> <span>${requestScope.actor.surname}</span></h2>
               <hr>
-              <p><fmt:message key="balance" bundle="${rb}"/>: ${requestScope.actor.balance}</p>
+              <p><fmt:message key="balance" bundle="${rb}"/>: ${requestScope.wallet.balance}</p>
               <a href="<c:url value="/jsp/editProfile.jsp"/> " class="btn btn-indigo"><fmt:message key="update_profile" bundle="${rb}"/></a>
 
             </div>

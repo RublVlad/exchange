@@ -33,15 +33,19 @@ public class ChainFactory { //Loads on servlet initialization
     private static CommandHandler offerBeanCreator;
     private static CommandHandler deliveryBeanCreator;
     private static CommandHandler relationBeanCreator;
+    private static CommandHandler walletBeanCreator;
 
     /*Branches*/
     private static CommandHandler sessionBranch;
     private static CommandHandler actorBranch;
+    private static CommandHandler walletBranch;
 
     /*Managers*/
     private static CommandHandler sessionManager;
     private static CommandHandler clientManager;
+    private static CommandHandler walletManagerClient;
     private static CommandHandler courierManager;
+    private static CommandHandler walletManagerCourier;
     private static CommandHandler deliveryManager;
     private static CommandHandler offerManager;
     private static CommandHandler relationManager;
@@ -68,10 +72,10 @@ public class ChainFactory { //Loads on servlet initialization
     private static CommandHandler managerLogger;
 
     static {
+        initLoggers();
         initCheckers();
         initValidators();
         initBeanCreators();
-        initLoggers();
         createEmptyChain();
         try {
             initManagers();
@@ -102,6 +106,10 @@ public class ChainFactory { //Loads on servlet initialization
                 chain = permissionChecker.chain(actorBranch);
                 break;
             }
+            case UPDATE_WALLET: {
+                chain = walletBranch;
+                break;
+            }
             case UPDATE_OFFER: {
                 chain = permissionChecker.chain(offerBeanCreator).chain(offerBeanValidator).chain(offerManager);
                 break;
@@ -115,7 +123,8 @@ public class ChainFactory { //Loads on servlet initialization
                 break;
             }
             case GET_USERS: {
-                chain = permissionChecker.chain(sessionManager).chain(clientManager).chain(courierManager);
+                chain = permissionChecker.chain(sessionManager).chain(clientManager).chain(courierManager)
+                        .chain(walletManagerClient).chain(walletManagerCourier);
                 break;
             }
             case DELETE_USER: {
@@ -123,8 +132,9 @@ public class ChainFactory { //Loads on servlet initialization
                 break;
             }
             case GET_PROFILE: {  //FIXME check for permissions
-                CommandHandler branch = clientManager.branch(isCourierSession, courierManager);
-                chain = branch;
+                CommandHandler actorBranch = clientManager.branch(isCourierSession, courierManager);
+                CommandHandler walletBranch = walletManagerClient.branch(isCourierSession, walletManagerCourier);
+                chain = actorBranch.chain(walletBranch);
                 break;
             }
             case GET_COURIERS: {
@@ -145,7 +155,8 @@ public class ChainFactory { //Loads on servlet initialization
                 break;
             }
             case REQUEST_DELIVERY: {
-                chain = permissionChecker.chain(deliveryBeanCreator).chain(clientManager).chain(offerManager).chain(deliveryManager);
+                chain = permissionChecker.chain(deliveryBeanCreator).chain(walletManagerClient)
+                        .chain(offerManager).chain(deliveryManager);
                 break;
             }
             case FINISH_DELIVERY: {
@@ -242,11 +253,17 @@ public class ChainFactory { //Loads on servlet initialization
     }
 
 
+    private static void initWalletBranch() {
+        CommandHandler branch = walletManagerClient.branch(isCourierSession, walletManagerCourier);
+        walletBranch = walletBeanCreator.chain(branch);
+    }
 
     private static void initManagers() throws ManagerInitializationException {
         sessionManager = new HttpSessionManager();
         clientManager = new ActorManager(RoleEnum.CLIENT);
+        walletManagerClient = new WalletManager(RoleEnum.CLIENT);
         courierManager = new ActorManager(RoleEnum.COURIER);
+        walletManagerCourier = new WalletManager(RoleEnum.COURIER);
         deliveryManager = new DeliveryManager();
         offerManager = new OfferManager();
         relationManager = new RelationManager();
@@ -303,12 +320,12 @@ public class ChainFactory { //Loads on servlet initialization
     private static void initFinishDeliveryTransaction(){
         CommandHandler deliveryTransaction = (request, command) -> {
             DeliveryManager deliveryManager = new DeliveryManager();
-            ActorManager clientManager = new ActorManager(RoleEnum.CLIENT);
-            ActorManager courierManager = new ActorManager(RoleEnum.COURIER);
+            WalletManager walletManagerClient = new WalletManager(RoleEnum.CLIENT);
+            WalletManager walletManagerCourier = new WalletManager(RoleEnum.COURIER);
             AbstractManager<DeliveryBean> transactionalManager =
                     AbstractManager.createTransactionalManager(deliveryManager);
-            AbstractManager<DeliveryBean> deliveryClientCombination = transactionalManager.combine(clientManager);
-            AbstractManager<DeliveryBean> deliveryActorCombination = deliveryClientCombination.combine(courierManager);
+            AbstractManager<DeliveryBean> deliveryClientCombination = transactionalManager.combine(walletManagerClient);
+            AbstractManager<DeliveryBean> deliveryActorCombination = deliveryClientCombination.combine(walletManagerCourier);
             boolean status = deliveryActorCombination.handle(request, command);
             deliveryActorCombination.closeManager();
             return status;
@@ -357,6 +374,7 @@ public class ChainFactory { //Loads on servlet initialization
     private static void initBranches() {
         initSessionBranch();
         initActorBranch();
+        initWalletBranch();
     }
 
 
@@ -386,6 +404,11 @@ public class ChainFactory { //Loads on servlet initialization
             RelationBean delivery = new RelationBean();
             return getBeanCreator(delivery, RequestAttributesNameProvider.RELATION_ATTRIBUTE).handle(request, command);
         };
+
+        walletBeanCreator = (request, command) ->{
+            WalletBean wallet = new WalletBean();
+            return getBeanCreator(wallet, RequestAttributesNameProvider.WALLET_ATTRIBUTE).handle(request, command);
+        };
     }
 
     private static void initLoggers() {
@@ -410,13 +433,15 @@ public class ChainFactory { //Loads on servlet initialization
             @Override
             public CommandHandler chain(CommandHandler other){
                 return (request, command) -> {
+                    HttpSession session = request.getSession();
+                    RoleEnum role = (RoleEnum) session.getAttribute(SessionAttributesNameProvider.ROLE);
+                    long id = (long) session.getAttribute(SessionAttributesNameProvider.ID);
+                    String successLog = String.format(logBeforeCommand, role, id);
+                    logger.info(successLog);
                     boolean status = other.handle(request, command);
                     if (!status){
-                        HttpSession session = request.getSession();
-                        String role = (String) session.getAttribute(SessionAttributesNameProvider.ROLE);
-                        long id = (long) session.getAttribute(SessionAttributesNameProvider.ID);
-                        String log = String.format(logOnFailure, role, id);
-                        logger.warn(log);
+                        String failureLog = String.format(logOnFailure, role, id);
+                        logger.warn(failureLog);
                     }
                     return status;
                 };
@@ -424,11 +449,6 @@ public class ChainFactory { //Loads on servlet initialization
 
             @Override
             public boolean handle(HttpServletRequest request, CommandEnum command) {
-                HttpSession session = request.getSession();
-                String role = (String) session.getAttribute(SessionAttributesNameProvider.ROLE);
-                long id = (long) session.getAttribute(SessionAttributesNameProvider.ID);
-                String log = String.format(logBeforeCommand, role, id);
-                logger.info(log);
                 return true;
             }
         };

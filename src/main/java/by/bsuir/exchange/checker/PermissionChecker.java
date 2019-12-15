@@ -44,7 +44,7 @@ class Permission{
 }
 
 public class PermissionChecker {
-    private final static int N_COMMANDS = 23;
+    private final static int N_COMMANDS = 24;
     private final static int N_RESOURCES = 9;
     private final static int N_ROLES = 4;
 
@@ -92,7 +92,7 @@ public class PermissionChecker {
     private static void addGetImageCommandCompetencies() {
         int i = CommandEnum.GET_IMAGE.ordinal();
         EnumSet<PermissionEnum> imagePermissions = EnumSet.of(READ);
-        instance.commandCompetencies[i][ResourceEnum.COURIER.ordinal()] = new Permission(imagePermissions);
+        instance.commandCompetencies[i][ResourceEnum.IMAGE.ordinal()] = new Permission(imagePermissions);
     }
 
     private static void addGetProfileCourierCommandCompetencies() {

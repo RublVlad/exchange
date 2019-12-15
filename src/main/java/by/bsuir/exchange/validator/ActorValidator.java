@@ -17,10 +17,8 @@ public class ActorValidator {
         }
         String name = actorBean.getName();
         String surname = actorBean.getSurname();
-        double balance = actorBean.getBalance();
         long likes = actorBean.getLikes();
-        return validateName(name) && validateSurname(surname)
-                && validateBalance(balance) && validateLikes(likes);
+        return validateName(name) && validateSurname(surname) && validateLikes(likes);
     }
 
     private static boolean validateName(String name){

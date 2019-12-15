@@ -85,6 +85,17 @@
                     </div>
                 </form>
             </div>
+
+            <div class="row d-flex justify-content-center pt-4">
+                <div class="col-lg-4 col-md-6 mb-0">
+                    <form class="text-center p-5" method="POST" action="<c:url value="/controller" />">
+                        <input type="hidden" name="command" value="update_wallet" />
+                        <h3 class="pt-2">Update balance</h3>
+                        <input type="number"  class="form-control mb-4" name="balance" placeholder="Balance" required>
+                        <button class="btn btn-info my-4 btn-block" type="submit">Update balance</button>
+                    </form>
+                </div>
+            </div>
         </div>
         <!--Main container-->
     

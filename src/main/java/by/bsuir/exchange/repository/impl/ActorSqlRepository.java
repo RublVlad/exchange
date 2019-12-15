@@ -32,6 +32,7 @@ public class ActorSqlRepository extends SqlRepository<ActorBean> {
         this.updateTemplate = updateTemplate;
         this.insertTemplate = insertTemplate;
         this.role = role;
+        this.tag = RepositoryTagEnum.ACTOR_REPOSITORY;
     }
 
     @Override
@@ -41,6 +42,7 @@ public class ActorSqlRepository extends SqlRepository<ActorBean> {
         while (resultSet.next()){
             String table = role == RoleEnum.CLIENT? DataBaseAttributesProvider.CLIENT_TABLE
                                                     : DataBaseAttributesProvider.COURIER_TABLE;
+
             String column = DataBaseAttributesProvider.NAME;
             String columnName = DataBaseAttributesProvider.getColumnName(table, column);
             String name = resultSet.getString(columnName);
@@ -53,10 +55,6 @@ public class ActorSqlRepository extends SqlRepository<ActorBean> {
             columnName = DataBaseAttributesProvider.getColumnName(table, column);
             long id = resultSet.getLong(columnName);
 
-            column = DataBaseAttributesProvider.BALANCE;
-            columnName = DataBaseAttributesProvider.getColumnName(table, column);
-            double balance = resultSet.getDouble(columnName);
-
             column = DataBaseAttributesProvider.USER_ID;
             columnName = DataBaseAttributesProvider.getColumnName(table, column);
             long user_id = resultSet.getLong(columnName);
@@ -65,7 +63,7 @@ public class ActorSqlRepository extends SqlRepository<ActorBean> {
             columnName = DataBaseAttributesProvider.getColumnName(table, column);
             boolean archival = resultSet.getBoolean(columnName);
 
-            ActorBean actor = new ActorBean(id, name, surname, balance, user_id, archival);
+            ActorBean actor = new ActorBean(id, name, surname, user_id, archival);
             if (role == RoleEnum.COURIER){
                 column = DataBaseAttributesProvider.LIKES;
                 columnName = DataBaseAttributesProvider.getColumnName(table, column);
@@ -112,35 +110,31 @@ public class ActorSqlRepository extends SqlRepository<ActorBean> {
     private void populateCourierInsert(PreparedStatement statement, ActorBean actor) throws SQLException {
         statement.setString(1, actor.getName());
         statement.setString(2, actor.getSurname());
-        statement.setDouble(3, actor.getBalance());
-        statement.setLong(4, actor.getLikes());
-        statement.setBoolean(5, actor.getArchival());
-        statement.setLong(6, actor.getUserId());
+        statement.setLong(3, actor.getLikes());
+        statement.setBoolean(4, actor.getArchival());
+        statement.setLong(5, actor.getUserId());
     }
 
     private void populateClientInsert(PreparedStatement statement, ActorBean actor) throws SQLException {
         statement.setString(1, actor.getName());
         statement.setString(2, actor.getSurname());
-        statement.setDouble(3, actor.getBalance());
-        statement.setBoolean(4, actor.getArchival());
-        statement.setLong(5, actor.getUserId());
+        statement.setBoolean(3, actor.getArchival());
+        statement.setLong(4, actor.getUserId());
     }
 
 
     private void populateClientUpdate(PreparedStatement statement, ActorBean client) throws SQLException {
         statement.setString(1, client.getName());
         statement.setString(2, client.getSurname());
-        statement.setDouble(3, client.getBalance());
-        statement.setBoolean(4, client.getArchival());
-        statement.setLong(5, client.getId());
+        statement.setBoolean(3, client.getArchival());
+        statement.setLong(4, client.getId());
     }
 
     private void populateCourierUpdate(PreparedStatement statement, ActorBean courier) throws SQLException {
         statement.setString(1, courier.getName());
         statement.setString(2, courier.getSurname());
-        statement.setDouble(3, courier.getBalance());
-        statement.setLong(4, courier.getLikes());
-        statement.setBoolean(5, courier.getArchival());
-        statement.setLong(6, courier.getId());
+        statement.setLong(3, courier.getLikes());
+        statement.setBoolean(4, courier.getArchival());
+        statement.setLong(5, courier.getId());
     }
 }
