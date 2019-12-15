@@ -24,8 +24,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.*;
 
-public class ActorManager extends AbstractManager<ActorBean> implements CommandHandler {
-    private static final double ZERO = 0;
+public class ActorManager extends AbstractManager<ActorBean>{
 
     private RoleEnum role;
 

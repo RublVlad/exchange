@@ -7,6 +7,8 @@ public class RequestAttributesNameProvider {
     public static final String WALLET_ATTRIBUTE = "wallet";
     public static final String DELIVERY_ATTRIBUTE = "delivery";
     public static final String RELATION_ATTRIBUTE = "relation";
+    public static final String PERSONAL_DATA_ATTRIBUTE = "personal_data";
+
     public static final String OFFER_LIST_ATTRIBUTE = "offer_list";
     public static final String ACTOR_LIST_ATTRIBUTE = "actor_list";
     public static final String ACTOR_MAP_ATTRIBUTE = "actor_map";

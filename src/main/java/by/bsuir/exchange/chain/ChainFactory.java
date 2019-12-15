@@ -23,7 +23,6 @@ import java.lang.reflect.InvocationTargetException;
 
 public class ChainFactory { //Loads on servlet initialization
 
-
     /*Chains*/
     private static CommandHandler emptyChain;
 
@@ -34,18 +33,22 @@ public class ChainFactory { //Loads on servlet initialization
     private static CommandHandler deliveryBeanCreator;
     private static CommandHandler relationBeanCreator;
     private static CommandHandler walletBeanCreator;
+    private static CommandHandler personalDataBeanCreator;
 
     /*Branches*/
     private static CommandHandler sessionBranch;
     private static CommandHandler actorBranch;
     private static CommandHandler walletBranch;
+    private static CommandHandler personalDataBranch;
 
     /*Managers*/
     private static CommandHandler sessionManager;
     private static CommandHandler clientManager;
     private static CommandHandler walletManagerClient;
+    private static CommandHandler dataManagerClient;
     private static CommandHandler courierManager;
     private static CommandHandler walletManagerCourier;
+    private static CommandHandler dataManagerCourier;
     private static CommandHandler deliveryManager;
     private static CommandHandler offerManager;
     private static CommandHandler relationManager;
@@ -103,7 +106,8 @@ public class ChainFactory { //Loads on servlet initialization
                 break;
             }
             case UPDATE_PROFILE:{
-                chain = permissionChecker.chain(actorBranch);
+                CommandHandler personalDataBranch = dataManagerClient.branch(isCourierSession, dataManagerCourier);
+                chain = permissionChecker.chain(personalDataBeanCreator).chain(personalDataBranch);
                 break;
             }
             case UPDATE_WALLET: {
@@ -134,7 +138,8 @@ public class ChainFactory { //Loads on servlet initialization
             case GET_PROFILE: {  //FIXME check for permissions
                 CommandHandler actorBranch = clientManager.branch(isCourierSession, courierManager);
                 CommandHandler walletBranch = walletManagerClient.branch(isCourierSession, walletManagerCourier);
-                chain = actorBranch.chain(walletBranch);
+                CommandHandler personalDataBranch = dataManagerClient.branch(isCourierSession, dataManagerCourier);
+                chain = actorBranch.chain(walletBranch).chain(personalDataBranch);
                 break;
             }
             case GET_COURIERS: {
@@ -243,6 +248,20 @@ public class ChainFactory { //Loads on servlet initialization
         emptyChain = (request, command) -> true;
     }
 
+
+    private static void initBranches() throws ManagerInitializationException {
+        initSessionBranch();
+        initActorBranch();
+        initWalletBranch();
+        initPersonalDataBranch();
+    }
+
+    private static void initPersonalDataBranch() throws ManagerInitializationException {  //FIXME without permission check
+            PersonalDataManager clientDataManager = new PersonalDataManager(RoleEnum.CLIENT);
+            PersonalDataManager courierDataManager = new PersonalDataManager(RoleEnum.COURIER);
+            personalDataBranch = clientDataManager.branch(isCourierSession, courierDataManager);
+    }
+
     private static void initSessionBranch() {
         sessionBranch = userBeanCreator.chain(userBeanValidator).chain(sessionManager);
     }
@@ -262,8 +281,10 @@ public class ChainFactory { //Loads on servlet initialization
         sessionManager = new HttpSessionManager();
         clientManager = new ActorManager(RoleEnum.CLIENT);
         walletManagerClient = new WalletManager(RoleEnum.CLIENT);
+        dataManagerClient = new PersonalDataManager(RoleEnum.CLIENT);
         courierManager = new ActorManager(RoleEnum.COURIER);
         walletManagerCourier = new WalletManager(RoleEnum.COURIER);
+        dataManagerCourier = new PersonalDataManager(RoleEnum.COURIER);
         deliveryManager = new DeliveryManager();
         offerManager = new OfferManager();
         relationManager = new RelationManager();
@@ -371,11 +392,6 @@ public class ChainFactory { //Loads on servlet initialization
         deleteUserTransactional = permissionChecker.chain(userBeanCreator).chain(deleteUserBranch);
     }
 
-    private static void initBranches() {
-        initSessionBranch();
-        initActorBranch();
-        initWalletBranch();
-    }
 
 
     private static void initBeanCreators() {
@@ -408,6 +424,11 @@ public class ChainFactory { //Loads on servlet initialization
         walletBeanCreator = (request, command) ->{
             WalletBean wallet = new WalletBean();
             return getBeanCreator(wallet, RequestAttributesNameProvider.WALLET_ATTRIBUTE).handle(request, command);
+        };
+
+        personalDataBeanCreator = (request, command) ->{
+            PersonalDataBean personalData = new PersonalDataBean();
+            return getBeanCreator(personalData, RequestAttributesNameProvider.PERSONAL_DATA_ATTRIBUTE).handle(request, command);
         };
     }
 

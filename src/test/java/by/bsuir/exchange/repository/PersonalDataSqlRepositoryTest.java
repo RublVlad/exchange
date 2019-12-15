@@ -1,14 +1,14 @@
 package by.bsuir.exchange.repository;
 
 import by.bsuir.exchange.bean.ActorBean;
-import by.bsuir.exchange.bean.WalletBean;
+import by.bsuir.exchange.bean.PersonalDataBean;
 import by.bsuir.exchange.entity.RoleEnum;
 import by.bsuir.exchange.pool.ConnectionPool;
 import by.bsuir.exchange.repository.exception.RepositoryOperationException;
+import by.bsuir.exchange.repository.impl.PersonalDataSqlRepository;
 import by.bsuir.exchange.repository.impl.SqlRepository;
-import by.bsuir.exchange.repository.impl.WalletSqlRepository;
 import by.bsuir.exchange.specification.Specification;
-import by.bsuir.exchange.specification.wallet.WalletIdSqlSpecificationFactory;
+import by.bsuir.exchange.specification.personaldata.PersonalDataIdSqlSpecificationFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.testng.Assert;
@@ -20,26 +20,24 @@ import java.sql.*;
 import java.util.List;
 import java.util.Optional;
 
-public class WalletSqlRepositoryTest extends SqlRepositoryTest{
+public class PersonalDataSqlRepositoryTest extends SqlRepositoryTest {
     private static final String TRUNCATE_QUERY = "TRUNCATE TABLE client";
     private static final String REPOSITORY_ERROR = "Repository error";
-
-    private static final String INSERT_QUERY_WALLET =
-            "INSERT INTO client (balance) VALUES (?)";
 
     private static final String INSERT_QUERY_CLIENT =
             "INSERT INTO client (name, surname, archival, user_id) VALUES (?, ?, ?, ?)";
 
-
     private static final String UPDATE_QUERY =
-            "UPDATE client SET balance=? WHERE id=?";
+            "UPDATE client SET city=?, age=? WHERE id=?";
 
     private static final int N_BEANS = 4;
 
-    private static final WalletBean[] wallets = {
-            new WalletBean(1,  100),
-            new WalletBean(2,  150),
-            new WalletBean(3,  100.17),
+    private static final PersonalDataBean[] personalData = {
+            new PersonalDataBean(1, 18, "Samara"),
+            new PersonalDataBean(1, 21, "Vilnius"),
+            new PersonalDataBean(1, 29, "Minsk"),
+            new PersonalDataBean(1, 23, "Moscow"),
+
     };
 
     private static final ActorBean[] clients = {
@@ -48,10 +46,10 @@ public class WalletSqlRepositoryTest extends SqlRepositoryTest{
             new ActorBean(1, "Forest", "Gamp", 73, 3, false),
     };
 
-    private static final double MARK = -42;
+    private static final String MARK = "MARK";
 
     private Connection connection;
-    private SqlRepository<WalletBean> repository;
+    private SqlRepository<PersonalDataBean> repository;
     private Logger logger = LogManager.getRootLogger();
 
     @BeforeClass
@@ -95,45 +93,45 @@ public class WalletSqlRepositoryTest extends SqlRepositoryTest{
                 logger.info("Close pool");
             }
         };
-        repository = new WalletSqlRepository(pool, UPDATE_QUERY, RoleEnum.CLIENT);
+        repository = new PersonalDataSqlRepository(pool, UPDATE_QUERY, RoleEnum.CLIENT);
     }
 
     @Test
-    public void getWalletByIdTest(){
-        WalletBean expected = wallets[0];
-        Specification<WalletBean, PreparedStatement, Connection> specification =
-                WalletIdSqlSpecificationFactory.getSpecification(RoleEnum.CLIENT, expected.getId());
-        Optional<List<WalletBean>> optionalWallets = Optional.empty();
+    public void getPersonalDataByIdTest(){
+        PersonalDataBean expected = personalData[0];
+        Specification<PersonalDataBean, PreparedStatement, Connection> specification =
+                PersonalDataIdSqlSpecificationFactory.getSpecification(RoleEnum.CLIENT, expected.getId());
+        Optional<List<PersonalDataBean>> optionalPersonalData = Optional.empty();
         try {
-            optionalWallets = repository.find(specification);
+            optionalPersonalData = repository.find(specification);
         } catch (RepositoryOperationException e) {
             logger.error(REPOSITORY_ERROR, e);
         }
-        assert optionalWallets.isPresent();
-        WalletBean actual = optionalWallets.get().get(0);
+        assert optionalPersonalData.isPresent();
+        PersonalDataBean actual = optionalPersonalData.get().get(0);
         Assert.assertEquals(actual.getId(), expected.getId());
     }
 
     @Test
-    public void updateWalletTest(){
-        WalletBean wallet = wallets[2];
-        Specification<WalletBean, PreparedStatement, Connection> specification =
-                WalletIdSqlSpecificationFactory.getSpecification(RoleEnum.CLIENT, wallet.getId());
-        Optional<List<WalletBean>> optionalWallets = Optional.empty();
+    public void updatePersonalDataTest(){
+        PersonalDataBean personalDataBean = personalData[2];
+        Specification<PersonalDataBean, PreparedStatement, Connection> specification =
+                PersonalDataIdSqlSpecificationFactory.getSpecification(RoleEnum.CLIENT, personalDataBean.getId());
+        Optional<List<PersonalDataBean>> optionalPersonalData = Optional.empty();
         try {
-            optionalWallets = repository.find(specification);
-            assert optionalWallets.isPresent();
-            wallet = optionalWallets.get().get(0);
-            wallet.setBalance(MARK);
-            repository.update(wallet);
-            optionalWallets = repository.find(specification);
+            optionalPersonalData = repository.find(specification);
+            assert optionalPersonalData.isPresent();
+            personalDataBean = optionalPersonalData.get().get(0);
+            personalDataBean.setCity(MARK);
+            repository.update(personalDataBean);
+            optionalPersonalData = repository.find(specification);
         } catch (RepositoryOperationException e) {
             logger.error(REPOSITORY_ERROR, e);
         }
-        assert optionalWallets.isPresent();
-        wallet= optionalWallets.get().get(0);
-        double actualBalance = wallet.getBalance();
-        Assert.assertEquals(actualBalance, MARK);
+        assert optionalPersonalData.isPresent();
+        personalDataBean= optionalPersonalData.get().get(0);
+        String actualCity = personalDataBean.getCity();
+        Assert.assertEquals(actualCity, MARK);
     }
 
     @AfterClass

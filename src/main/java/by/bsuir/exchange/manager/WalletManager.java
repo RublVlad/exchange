@@ -12,7 +12,6 @@ import by.bsuir.exchange.repository.exception.RepositoryInitializationException;
 import by.bsuir.exchange.repository.exception.RepositoryOperationException;
 import by.bsuir.exchange.repository.factory.WalletSqlRepositoryFactory;
 import by.bsuir.exchange.specification.Specification;
-import by.bsuir.exchange.specification.actor.factory.ActorUserIdSqlSpecificationFactory;
 import by.bsuir.exchange.specification.wallet.WalletIdSqlSpecificationFactory;
 import by.bsuir.exchange.tag.ManagerTagEnum;
 
@@ -20,7 +19,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public class WalletManager extends AbstractManager<WalletBean> implements CommandHandler {
     private RoleEnum role;

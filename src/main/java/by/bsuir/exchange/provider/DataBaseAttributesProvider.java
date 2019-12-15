@@ -29,6 +29,8 @@ public class DataBaseAttributesProvider {
     public static final String NAME = "NAME";
     public static final String SURNAME = "SURNAME";
     public static final String USER_ID = "USER_ID";
+    public static final String CITY = "CITY";
+    public static final String AGE = "AGE";
 
     public static final String COURIER_TABLE = "courier"; //FIXME
     public static final String BALANCE = "BALANCE";
@@ -65,6 +67,8 @@ public class DataBaseAttributesProvider {
         clientColumns.put(SURNAME, "surname");
         clientColumns.put(BALANCE, "balance");
         clientColumns.put(USER_ID, "user_id");
+        clientColumns.put(CITY, "city");
+        clientColumns.put(AGE, "age");
         clientColumns.put(ARCHIVAL, "archival");
 
         courierColumns.put(ID, "id");
@@ -73,6 +77,8 @@ public class DataBaseAttributesProvider {
         courierColumns.put(BALANCE, "balance");
         courierColumns.put(USER_ID, "user_id");
         courierColumns.put(LIKES, "likes");
+        courierColumns.put(CITY, "city");
+        courierColumns.put(AGE, "age");
         courierColumns.put(ARCHIVAL, "archival");
 
         deliveryColumns.put(ID, "id");
