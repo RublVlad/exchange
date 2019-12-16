@@ -9,6 +9,7 @@ import by.bsuir.exchange.provider.PageAttributesNameProvider;
 import by.bsuir.exchange.provider.RequestAttributesNameProvider;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Set;
 
 import static by.bsuir.exchange.provider.ConfigurationProvider.*;
 import static by.bsuir.exchange.provider.PageAttributesNameProvider.COMMAND;
@@ -19,16 +20,24 @@ public class CommandFactory {
 
     private static String[] successPages;
     private static String[] failurePages;
+    private static Set<CommandEnum> redirectCommand;
     private static CommandEnum[] feedBacks;
 
     static {
         initSuccessPages();
         initFeedBacks();
+        initRedirects();
+    }
+
+    private static void initRedirects() {
+        redirectCommand = Set.of(CommandEnum.FINISH_DELIVERY, CommandEnum.LOGOUT, CommandEnum.SET_LOCALE,
+                            CommandEnum.LIKE_COURIER, CommandEnum.REQUEST_DELIVERY, CommandEnum.DELETE_USER,
+                            CommandEnum.REGISTER, CommandEnum.UPDATE_OFFER, CommandEnum.UPDATE_PROFILE,
+                            CommandEnum.UPDATE_WALLET, CommandEnum.LOGIN);
     }
 
     private static void initFeedBacks(){
         feedBacks = new CommandEnum[N_COMMANDS];
-
         feedBacks[CommandEnum.LOGIN.ordinal()] = CommandEnum.GET_PROFILE;
         feedBacks[CommandEnum.FINISH_DELIVERY.ordinal()] = CommandEnum.GET_DELIVERIES;
         feedBacks[CommandEnum.DELETE_USER.ordinal()] = CommandEnum.GET_USERS;
@@ -124,9 +133,9 @@ public class CommandFactory {
         return new Command(handler, commandEnum, successPage, failurePage, redirect);
     }
 
-    private static boolean isRedirect(CommandEnum commandEnum) {
-        return commandEnum == CommandEnum.FINISH_DELIVERY || commandEnum == CommandEnum.LOGOUT
-                || commandEnum == CommandEnum.SET_LOCALE;
+    private static boolean isRedirect(CommandEnum command) {
+        return redirectCommand.contains(command);
+
     }
 
     private static boolean isSamePage(CommandEnum command){

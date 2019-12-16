@@ -125,9 +125,9 @@ public class ImageController extends HttpServlet implements Servlet {
         }
 
         String page = (String) request.getAttribute(RequestAttributesNameProvider.PAGE);
-
-        RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(page);
-        dispatcher.forward(request, response);
+        String jsp = page.replace("/WEB-INF", "");
+        String url = String.format("%s%s", request.getContextPath(), jsp);
+        response.sendRedirect(url);
     }
 
 }
