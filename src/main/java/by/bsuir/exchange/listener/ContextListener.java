@@ -32,6 +32,30 @@ public class ContextListener implements ServletContextListener {
             Logger logger = LogManager.getRootLogger();
             logger.fatal("Unable to load the chain factory class");
         }
+
+        try {
+            String chainFactoryClassName = "by.bsuir.exchange.chain.ManagerFactory";
+            Class.forName(chainFactoryClassName);
+        } catch (ClassNotFoundException e) {
+            Logger logger = LogManager.getRootLogger();
+            logger.fatal("Unable to load the chain manager factory class");
+        }
+
+        try {
+            String chainFactoryClassName = "by.bsuir.exchange.chain.ValidatorFactory";
+            Class.forName(chainFactoryClassName);
+        } catch (ClassNotFoundException e) {
+            Logger logger = LogManager.getRootLogger();
+            logger.fatal("Unable to load the chain validator factory class");
+        }
+
+        try {
+            String chainFactoryClassName = "by.bsuir.exchange.chain.BeanCreatorFactory";
+            Class.forName(chainFactoryClassName);
+        } catch (ClassNotFoundException e) {
+            Logger logger = LogManager.getRootLogger();
+            logger.fatal("Unable to load the chain bean creator factory class");
+        }
     }
 
     @Override
