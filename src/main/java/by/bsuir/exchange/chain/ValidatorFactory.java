@@ -4,10 +4,7 @@ import by.bsuir.exchange.bean.*;
 import by.bsuir.exchange.command.CommandEnum;
 import by.bsuir.exchange.provider.PageAttributesNameProvider;
 import by.bsuir.exchange.provider.RequestAttributesNameProvider;
-import by.bsuir.exchange.validator.ActorValidator;
-import by.bsuir.exchange.validator.OfferValidator;
-import by.bsuir.exchange.validator.UserValidator;
-
+import by.bsuir.exchange.validator.*;
 
 
 class ValidatorFactory {
@@ -39,12 +36,36 @@ class ValidatorFactory {
                 validator = userValidator.chain(actorValidator);
                 break;
             }
-            case LOGIN:
-            case DELETE_USER: {
+            case LOGIN: {
                 validator = (request, command1) -> {
                     String attribute = PageAttributesNameProvider.USER_ATTRIBUTE;
                     UserBean bean = (UserBean) request.getAttribute(attribute);
                     return UserValidator.validate(bean);
+                };
+                break;
+            }
+            case REQUEST_DELIVERY:
+            case FINISH_DELIVERY: {
+                validator = (request, command1) -> {
+                    String attribute = RequestAttributesNameProvider.DELIVERY_ATTRIBUTE;
+                    DeliveryBean bean = (DeliveryBean) request.getAttribute(attribute);
+                    return DeliveryValidator.validate(bean);
+                };
+                break;
+            }
+            case UPDATE_PROFILE: {
+                validator = (request, command1) -> {
+                    String attribute = RequestAttributesNameProvider.PERSONAL_DATA_ATTRIBUTE;
+                    PersonalDataBean bean = (PersonalDataBean) request.getAttribute(attribute);
+                    return PersonalDataValidator.validate(bean);
+                };
+                break;
+            }
+            case LIKE_COURIER: {
+                validator = (request, command1) -> {
+                    String attribute = RequestAttributesNameProvider.RELATION_ATTRIBUTE;
+                    RelationBean bean = (RelationBean) request.getAttribute(attribute);
+                    return RelationValidator.validate(bean);
                 };
                 break;
             }
@@ -53,6 +74,14 @@ class ValidatorFactory {
                     String attribute = RequestAttributesNameProvider.OFFER_ATTRIBUTE;
                     OfferBean bean = (OfferBean) request.getAttribute(attribute);
                     return OfferValidator.validate(bean);
+                };
+                break;
+            }
+            case UPDATE_WALLET: {
+                validator = (request, command1) -> {
+                    String attribute = RequestAttributesNameProvider.WALLET_ATTRIBUTE;
+                    WalletBean bean = (WalletBean) request.getAttribute(attribute);
+                    return WalletValidator.validate(bean);
                 };
                 break;
             }

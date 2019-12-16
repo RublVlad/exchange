@@ -1,7 +1,6 @@
 package by.bsuir.exchange.manager;
 
 import by.bsuir.exchange.bean.*;
-import by.bsuir.exchange.chain.CommandHandler;
 import by.bsuir.exchange.command.CommandEnum;
 import by.bsuir.exchange.entity.RoleEnum;
 import by.bsuir.exchange.manager.exception.ManagerInitializationException;
@@ -12,11 +11,9 @@ import by.bsuir.exchange.repository.exception.RepositoryInitializationException;
 import by.bsuir.exchange.repository.exception.RepositoryOperationException;
 import by.bsuir.exchange.repository.factory.ActorSqlRepositoryFactory;
 import by.bsuir.exchange.specification.Specification;
-import by.bsuir.exchange.specification.actor.ActorByUserIdSpecification;
 import by.bsuir.exchange.specification.actor.factory.ActorIdSqlSpecificationFactory;
 import by.bsuir.exchange.specification.actor.factory.ActorUserIdSqlSpecificationFactory;
 import by.bsuir.exchange.tag.ManagerTagEnum;
-import by.bsuir.exchange.tag.RepositoryTagEnum;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;

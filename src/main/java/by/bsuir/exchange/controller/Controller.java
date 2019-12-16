@@ -1,10 +1,9 @@
 package by.bsuir.exchange.controller;
 
+import by.bsuir.exchange.command.Command;
 import by.bsuir.exchange.command.CommandEnum;
-import by.bsuir.exchange.command.exception.CommandInitializationException;
 import by.bsuir.exchange.command.exception.CommandOperationException;
 import by.bsuir.exchange.command.factory.CommandFactory;
-import by.bsuir.exchange.command.Command;
 import by.bsuir.exchange.entity.RoleEnum;
 import by.bsuir.exchange.provider.ConfigurationProvider;
 import by.bsuir.exchange.provider.SessionAttributesNameProvider;

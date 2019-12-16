@@ -97,14 +97,10 @@ public class ChainFactory { //Loads on servlet initialization
             @Override
             public CommandHandler chain(CommandHandler other){
                 return (request, command) -> {
-                    HttpSession session = request.getSession();
-                    RoleEnum role = (RoleEnum) session.getAttribute(SessionAttributesNameProvider.ROLE);
-                    long id = (long) session.getAttribute(SessionAttributesNameProvider.ID);
-                    String successLog = String.format(logBeforeCommand, role, id);
-                    logger.info(successLog);
+                    handle(request, command);
                     boolean status = other.handle(request, command);
                     if (!status){
-                        String failureLog = String.format(logOnFailure, role, id);
+                        String failureLog = formatLog(request, logOnFailure);
                         logger.warn(failureLog);
                     }
                     return status;
@@ -113,7 +109,16 @@ public class ChainFactory { //Loads on servlet initialization
 
             @Override
             public boolean handle(HttpServletRequest request, CommandEnum command) {
+                String logBefore = formatLog(request, logBeforeCommand);
+                logger.info(logBefore);
                 return true;
+            }
+
+            private String formatLog(HttpServletRequest request, String log){
+                HttpSession session = request.getSession();
+                RoleEnum role = (RoleEnum) session.getAttribute(SessionAttributesNameProvider.ROLE);
+                long id = (long) session.getAttribute(SessionAttributesNameProvider.ID);
+                return String.format(log, role, id);
             }
         };
     }

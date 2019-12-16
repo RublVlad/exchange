@@ -6,11 +6,11 @@ import by.bsuir.exchange.entity.RelationEnum;
 import by.bsuir.exchange.entity.RoleEnum;
 
 public class RelationValidator {
+
     public static boolean validate(RelationBean relation){
-        long clientId = relation.getClientId();
         long courierId = relation.getCourierId();
         String relationString = relation.getRelation();
-        return validateId(clientId) && validateId(courierId) && validateRelation(relationString);
+        return validateId(courierId) && validateRelation(relationString);
     }
 
     private static boolean validateId(long id) {

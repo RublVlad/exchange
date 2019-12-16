@@ -15,7 +15,6 @@ public class OfferValidatorTest {
                 {new OfferBean(1, "1_X", 100, 2, false), true},
                 {new OfferBean(1, "lotus", 100, 2, false), true},
                 {new OfferBean(1, "", 100, 2, false), false},
-                {new OfferBean(1, "Car", 100, -5, false), false},
                 {new OfferBean(1, "Car", 1_000_000_000, 5, false), false},
         };
     }

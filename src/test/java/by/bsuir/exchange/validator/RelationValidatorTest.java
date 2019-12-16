@@ -13,7 +13,6 @@ public class RelationValidatorTest {
                 {new RelationBean(1, 1, 4, "NONE"), true},
                 {new RelationBean(1, 1, 4, "like"), true},
                 {new RelationBean(1, 1, 4, ""), false},
-                {new RelationBean(1, -7, 4, "LIKE"), false},
                 {new RelationBean(1, 1, -5, "LIKE"), false},
                 {new RelationBean(1, 1, 4, "LIKE1"), false},
         };

@@ -4,6 +4,7 @@ import by.bsuir.exchange.chain.CommandHandler;
 import by.bsuir.exchange.command.exception.CommandOperationException;
 import by.bsuir.exchange.manager.exception.ManagerInitializationException;
 import by.bsuir.exchange.manager.exception.ManagerOperationException;
+import by.bsuir.exchange.provider.RequestAttributesNameProvider;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,6 +30,10 @@ public class Command {
             success = handler.handle(request, tag);
         } catch (ManagerInitializationException | ManagerOperationException e) {
             throw new CommandOperationException(e);
+        }
+        Boolean invalidData = (Boolean) request.getAttribute(RequestAttributesNameProvider.INVALID_DATA);
+        if (invalidData != null && invalidData){
+            return successPage;
         }
         return success? successPage : failurePage;
     }
