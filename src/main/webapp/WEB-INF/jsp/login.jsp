@@ -5,6 +5,7 @@
 <html lang="en">
 <fmt:setLocale value="${sessionScope.lang}"/>
 <fmt:setBundle basename="login" var="rb" />
+<fmt:setBundle basename="global" var="glob" />
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -52,6 +53,11 @@
                 <c:if test="${not empty requestScope.error_string}">
                     <div class="alert alert-danger alert-dismissible fade show">
                             ${requestScope.error_string}
+                    </div>
+                </c:if>
+                <c:if test="${requestScope.invalid_data}">
+                    <div class="alert alert-danger alert-dismissible fade show">
+                        <fmt:message key="invalid_data" bundle="${glob}"/>
                     </div>
                 </c:if>
                   <!-- Register -->

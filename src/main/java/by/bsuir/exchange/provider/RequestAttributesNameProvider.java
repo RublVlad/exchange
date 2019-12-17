@@ -21,5 +21,5 @@ public class RequestAttributesNameProvider {
     public static final String ERROR_STRING = "error_string";
     public static final String PAGE = "page";
 
-    public static final String INVALID_DATA = "INVALID_DATA";
+    public static final String INVALID_DATA = "invalid_data";
 }

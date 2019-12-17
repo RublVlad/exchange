@@ -5,6 +5,7 @@
 <!DOCTYPE html>
 <fmt:setLocale value="${sessionScope.lang}"/>
 <fmt:setBundle basename="edit_profile" var="rb" />
+<fmt:setBundle basename="global" var="glob" />
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -34,6 +35,13 @@
             <div class="row d-flex justify-content-center">
                 <p class="h4 mb-4"><fmt:message key="main" bundle="${rb}"/></p>
             </div>
+            <c:if test="${requestScope.invalid_data}">
+                <div class="row d-flex justify-content-center">
+                    <div class="alert alert-danger alert-dismissible fade show">
+                        <fmt:message key="invalid_data" bundle="${glob}"/>
+                    </div>
+                </div>
+            </c:if>
             <div class="row d-flex justify-content-center">
                 <div class="col-lg-6 col-md-6 mb-0">
                     <form class="text-center border border-light p-5" method="POST" action="<c:url value="/controller" />">

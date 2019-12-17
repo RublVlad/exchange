@@ -31,9 +31,8 @@ public class Command {
         } catch (ManagerInitializationException | ManagerOperationException e) {
             throw new CommandOperationException(e);
         }
-        Boolean invalidData = (Boolean) request.getAttribute(RequestAttributesNameProvider.INVALID_DATA);
-        if (invalidData != null && invalidData){
-            return successPage;
+        if (!success){
+            redirect = false;
         }
         return success? successPage : failurePage;
     }

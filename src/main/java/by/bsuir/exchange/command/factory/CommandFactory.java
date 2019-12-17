@@ -61,28 +61,28 @@ public class CommandFactory {
         failurePages[CommandEnum.REGISTER.ordinal()] = ConfigurationProvider.getProperty(REGISTER_PAGE_PATH);
 
         successPages[CommandEnum.UPDATE_PROFILE.ordinal()] = ConfigurationProvider.getProperty(PROFILE_PAGE_PATH);
-        failurePages[CommandEnum.UPDATE_PROFILE.ordinal()] = ConfigurationProvider.getProperty(ERROR_PAGE_PATH);
+        failurePages[CommandEnum.UPDATE_PROFILE.ordinal()] = ConfigurationProvider.getProperty(EDIT_PROFILE_PAGE_PATH);
 
         successPages[CommandEnum.UPDATE_WALLET.ordinal()] = ConfigurationProvider.getProperty(PROFILE_PAGE_PATH);
-        failurePages[CommandEnum.UPDATE_WALLET.ordinal()] = ConfigurationProvider.getProperty(ERROR_PAGE_PATH);
+        failurePages[CommandEnum.UPDATE_WALLET.ordinal()] = ConfigurationProvider.getProperty(EDIT_PROFILE_PAGE_PATH);
 
         successPages[CommandEnum.UPDATE_AVATAR.ordinal()] = ConfigurationProvider.getProperty(PROFILE_PAGE_PATH);
-        failurePages[CommandEnum.UPDATE_AVATAR.ordinal()] = ConfigurationProvider.getProperty(ERROR_PAGE_PATH);
+        failurePages[CommandEnum.UPDATE_AVATAR.ordinal()] = ConfigurationProvider.getProperty(EDIT_PROFILE_PAGE_PATH);
 
         successPages[CommandEnum.UPDATE_OFFER.ordinal()] = ConfigurationProvider.getProperty(PROFILE_PAGE_PATH);
-        failurePages[CommandEnum.UPDATE_OFFER.ordinal()] = ConfigurationProvider.getProperty(ERROR_PAGE_PATH);
+        failurePages[CommandEnum.UPDATE_OFFER.ordinal()] = ConfigurationProvider.getProperty(EDIT_PROFILE_PAGE_PATH);
 
         successPages[CommandEnum.GET_COURIERS.ordinal()] = ConfigurationProvider.getProperty(COURIER_PAGE_PATH);
-        failurePages[CommandEnum.GET_COURIERS.ordinal()] = ConfigurationProvider.getProperty(PROFILE_PAGE_PATH);
+        failurePages[CommandEnum.GET_COURIERS.ordinal()] = ConfigurationProvider.getProperty(ERROR_PAGE_PATH);
 
         successPages[CommandEnum.REQUEST_DELIVERY.ordinal()] = ConfigurationProvider.getProperty(PROFILE_PAGE_PATH);
-        failurePages[CommandEnum.REQUEST_DELIVERY.ordinal()] = ConfigurationProvider.getProperty(ERROR_PAGE_PATH);
+        failurePages[CommandEnum.REQUEST_DELIVERY.ordinal()] = ConfigurationProvider.getProperty(OFFERS_PAGE_PATH);
 
         /*Feed back command*/
-        failurePages[CommandEnum.FINISH_DELIVERY.ordinal()] = ConfigurationProvider.getProperty(PROFILE_PAGE_PATH);
+        failurePages[CommandEnum.FINISH_DELIVERY.ordinal()] = ConfigurationProvider.getProperty(DELIVERIES_PAGE_PATH);
 
         successPages[CommandEnum.GET_DELIVERIES.ordinal()] = ConfigurationProvider.getProperty(DELIVERIES_PAGE_PATH);
-        failurePages[CommandEnum.GET_DELIVERIES.ordinal()] = ConfigurationProvider.getProperty(PROFILE_PAGE_PATH);
+        failurePages[CommandEnum.GET_DELIVERIES.ordinal()] = ConfigurationProvider.getProperty(ERROR_PAGE_PATH);
 
         successPages[CommandEnum.GET_IMAGE.ordinal()] = ConfigurationProvider.getProperty(GET_IMAGE_PATH);
         failurePages[CommandEnum.GET_IMAGE.ordinal()] = ConfigurationProvider.getProperty(ERROR_PAGE_PATH);
@@ -91,7 +91,7 @@ public class CommandFactory {
         failurePages[CommandEnum.GET_OFFERS.ordinal()] = ConfigurationProvider.getProperty(ERROR_PAGE_PATH);
 
         successPages[CommandEnum.GET_USERS.ordinal()] = ConfigurationProvider.getProperty(ADMIN_PAGE_PATH);
-        failurePages[CommandEnum.GET_USERS.ordinal()] = ConfigurationProvider.getProperty(ADMIN_PAGE_PATH);
+        failurePages[CommandEnum.GET_USERS.ordinal()] = ConfigurationProvider.getProperty(ERROR_PAGE_PATH);
 
         /*Feed back command*/
         failurePages[CommandEnum.DELETE_USER.ordinal()] = ConfigurationProvider.getProperty(ERROR_PAGE_PATH);

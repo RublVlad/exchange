@@ -19,6 +19,7 @@ public class ChainFactory { //Loads on servlet initialization
 
     /*Checkers*/
     private static CommandHandler permissionChecker;
+    private static CommandHandler invalidDataChecker;
     static CommandHandler isCourierSession;
     static CommandHandler isCourierRequest;
 
@@ -35,11 +36,15 @@ public class ChainFactory { //Loads on servlet initialization
 
     public static CommandHandler getChain(CommandEnum command){
         CommandHandler beanCreator = BeanCreatorFactory.getBeanCreator(command);
-        CommandHandler validator = ValidatorFactory.getValidator(command);
+        CommandHandler beanValidator = ValidatorFactory.getValidator(command);
+        CommandHandler validator = invalidDataChecker.chain( beanCreator.chain(beanValidator));
         CommandHandler manager = ManagerFactory.getManager(command);
-        return permissionLogger.chain(permissionChecker)
-                .chain(beanCreator).chain(validatorLogger).chain(validator)
-                .chain(managerLogger).chain(manager);
+
+        CommandHandler permissionTier = permissionLogger.chain(permissionChecker);
+        CommandHandler validatorTier = validatorLogger.chain(validator);
+        CommandHandler managerTier = managerLogger.chain(manager);
+
+        return permissionTier.chain(validatorTier).chain(managerTier);
     }
 
     private static void initCheckers(){
@@ -49,7 +54,6 @@ public class ChainFactory { //Loads on servlet initialization
             RoleEnum role = (RoleEnum) session.getAttribute(attribute);
             return PermissionChecker.getInstance().checkPermission(role, command);
         };
-        permissionChecker = permissionLogger.chain(permissionChecker);
 
         isCourierSession = (request, command1) -> {
             HttpSession session = request.getSession();
@@ -62,6 +66,26 @@ public class ChainFactory { //Loads on servlet initialization
             String courierRole = RoleEnum.COURIER.toString();
             String actualRole = user.getRole().toUpperCase();
             return courierRole.equals(actualRole);
+        };
+
+        invalidDataChecker  = new CommandHandler() {
+
+            @Override
+            public CommandHandler chain(CommandHandler other){
+                return (request, command) -> {
+                    boolean validData = other.handle(request, command);
+                    if (!validData){
+                        request.setAttribute(RequestAttributesNameProvider.INVALID_DATA, true);
+                    }
+                    return validData;
+                };
+            }
+
+            @Override
+            public boolean handle(HttpServletRequest request, CommandEnum command) {
+                return true;
+            }
+
         };
     }
 
