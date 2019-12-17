@@ -2,12 +2,14 @@ package by.bsuir.exchange.command;
 
 import by.bsuir.exchange.chain.CommandHandler;
 import by.bsuir.exchange.command.exception.CommandOperationException;
+import by.bsuir.exchange.entity.RoleEnum;
 import by.bsuir.exchange.manager.exception.ManagerInitializationException;
 import by.bsuir.exchange.manager.exception.ManagerOperationException;
-import by.bsuir.exchange.provider.RequestAttributesNameProvider;
+import by.bsuir.exchange.provider.SessionAttributesNameProvider;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 public class Command {
     private CommandHandler handler;
@@ -31,6 +33,13 @@ public class Command {
         } catch (ManagerInitializationException | ManagerOperationException e) {
             throw new CommandOperationException(e);
         }
+
+        HttpSession session = request.getSession();
+        RoleEnum role = (RoleEnum) session.getAttribute(SessionAttributesNameProvider.ROLE);
+        if (getTag() == CommandEnum.LOGIN && role == RoleEnum.ADMIN && success){
+            return  "/controller?command=get_users";
+        }
+
         if (!success){
             redirect = false;
         }

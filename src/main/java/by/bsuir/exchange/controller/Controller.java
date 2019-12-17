@@ -42,11 +42,6 @@ public class Controller extends HttpServlet implements Servlet {
         try {
             Command command = CommandFactory.getCommand(request);
             page = command.execute(request, response);
-            HttpSession session = request.getSession();
-            RoleEnum role = (RoleEnum) session.getAttribute(SessionAttributesNameProvider.ROLE);
-            if (command.getTag() == CommandEnum.LOGIN && role == RoleEnum.ADMIN){ //or filter?
-                page = "/controller?command=get_users";
-            }
             redirect = command.isRedirect();
         } catch (CommandOperationException e) {
             page = ConfigurationProvider.getProperty(ConfigurationProvider.ERROR_PAGE_PATH);
