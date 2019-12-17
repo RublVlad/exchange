@@ -1,12 +1,15 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
+<fmt:setLocale value="${sessionScope.lang}"/>
+<fmt:setBundle basename="offers" var="rb" />
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <title>Offers</title>
+  <title><fmt:message key="title" bundle="${rb}"/></title>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
   <jsp:include page="template/links.jsp" />
   <jsp:include page="template/scripts.jsp"/>
@@ -46,11 +49,11 @@
               <!--Title-->
               <h4 class="card-title"><span>${requestScope.actor_list[status.index].name}</span> <span>${requestScope.actor_list[status.index].surname}</span></h4>
               <!--Text-->
-              <p class="card-text"><span>Price: ${elem.price}</span></p>
-              <p class="card-text"><span>Transport: ${elem.transport}</span></p>
-              <p class="card-text"><span>Likes: ${requestScope.actor_list[status.index].likes}</span></p>
+              <p class="card-text"><span><fmt:message key="card.price" bundle="${rb}"/>: ${elem.price}</span></p>
+              <p class="card-text"><span><fmt:message key="card.transport" bundle="${rb}"/>: ${elem.transport}</span></p>
+              <p class="card-text"><span><fmt:message key="card.likes" bundle="${rb}"/>: ${requestScope.actor_list[status.index].likes}</span></p>
               <c:if test="${sessionScope.role == 'CLIENT'}">
-                <a href="<c:url value="/controller?command=request_delivery&courierId=${elem.courierId}&clientId=${sessionScope.id}"/>" class="btn btn-indigo">Request delivery</a>
+                <a href="<c:url value="/controller?command=request_delivery&courierId=${elem.courierId}&clientId=${sessionScope.id}"/>" class="btn btn-indigo"><fmt:message key="button.request_delivery" bundle="${rb}"/></a>
                 <a href="<c:url value="/controller?command=like_courier&courierId=${elem.courierId}&relation=like"/>" class=${btnAttr}><i class="fa fa-thumbs-up"></i></a>
               </c:if>
             </div>

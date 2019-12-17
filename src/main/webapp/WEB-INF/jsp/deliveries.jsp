@@ -1,6 +1,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE html>
+<fmt:setLocale value="${sessionScope.lang}"/>
+<fmt:setBundle basename="register" var="rb" />
 <html lang="en">
 <head>
   <meta charset="UTF-8">

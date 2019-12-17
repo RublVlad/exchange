@@ -1,12 +1,15 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE html>
 <html lang="en">
+<fmt:setLocale value="${sessionScope.lang}"/>
+<fmt:setBundle basename="admin" var="rb" />
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Admin</title>
+    <title><fmt:message key="title" bundle="${rb}"/></title>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
     <jsp:include page="template/links.jsp" />
     <jsp:include page="template/scripts.jsp"/>
@@ -34,7 +37,9 @@
             <div class="collapse navbar-collapse" id="basicExampleNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="<c:url value="/controller?command=logout" />">Logout</a>
+                        <a class="nav-link" href="<c:url value="/controller?command=logout" />">
+                            <fmt:message key="logout" bundle="${rb}"/>
+                        </a>
                     </li>
                 </ul>
                 <!-- Links -->
@@ -74,10 +79,10 @@
                             <!--Title-->
                             <h4 class="card-title"><span>${requestScope.actor_map[elem.id].name}</span> <span>${requestScope.actor_map[elem.id].surname}</span></h4>
                             <!--Text-->
-                            <p class="card-text"><span>Email: ${elem.email}</span></p>
-                            <p class="card-text"><span>Role: ${elem.role}</span></p>
-                            <p class="card-text"><span>Balance: ${requestScope.wallet_map[elem.id].balance}</span></p>
-                            <a href="<c:url value="/controller?command=delete_user&id=${elem.id}&role=${elem.role}"/>" class="btn btn-indigo">Delete</a>
+                            <p class="card-text"><span><fmt:message key="card.email" bundle="${rb}"/>: ${elem.email}</span></p>
+                            <p class="card-text"><span><fmt:message key="card.role" bundle="${rb}"/>: ${elem.role}</span></p>
+                            <p class="card-text"><span><fmt:message key="card.balance" bundle="${rb}"/>: ${requestScope.wallet_map[elem.id].balance}</span></p>
+                            <a href="<c:url value="/controller?command=delete_user&id=${elem.id}&role=${elem.role}"/>" class="btn btn-indigo"><fmt:message key="button.delete" bundle="${rb}"/></a>
                         </div>
                     </div>
                     <!--/.Card-->

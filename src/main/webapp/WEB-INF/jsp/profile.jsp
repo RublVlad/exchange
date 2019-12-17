@@ -46,11 +46,11 @@
               <h2><span>${requestScope.actor.name}</span> <span>${requestScope.actor.surname}</span></h2>
               <hr>
               <c:if test="${not empty requestScope.personal_data}">
-                <p>City: ${requestScope.personal_data.city}</p>
-                <p>Age: ${requestScope.personal_data.age}</p>
+                <p><fmt:message key="main.city" bundle="${rb}"/>: ${requestScope.personal_data.city}</p>
+                <p><fmt:message key="main.age" bundle="${rb}"/>: ${requestScope.personal_data.age}</p>
               </c:if>
-              <p><fmt:message key="balance" bundle="${rb}"/>: ${requestScope.wallet.balance}</p>
-              <a href="<c:url value="/jsp/editProfile.jsp"/> " class="btn btn-indigo"><fmt:message key="update_profile" bundle="${rb}"/></a>
+              <p><fmt:message key="main.balance" bundle="${rb}"/>: ${requestScope.wallet.balance}</p>
+              <a href="<c:url value="/jsp/editProfile.jsp"/> " class="btn btn-indigo"><fmt:message key="button.update_profile" bundle="${rb}"/></a>
 
             </div>
             <!-- Grid column -->

@@ -1,6 +1,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <!--Main Navigation-->
+<fmt:setLocale value="${sessionScope.lang}"/>
+<fmt:setBundle basename="header" var="rb" />
 <header>
   <!--Navbar-->
   <c:choose>
@@ -33,16 +36,16 @@
         <!-- Links -->
         <ul class="navbar-nav mr-auto">
           <li class="nav-item">
-            <a class="nav-link" href="<c:url value="/jsp/profile.jsp" />">Profile</a>
+            <a class="nav-link" href="<c:url value="/jsp/profile.jsp" />"><fmt:message key="link.profile" bundle="${rb}"/></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="<c:url value="/jsp/editProfile.jsp" />">Edit Profile</a>
+            <a class="nav-link" href="<c:url value="/jsp/editProfile.jsp" />"><fmt:message key="link.edit_profile" bundle="${rb}"/></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="<c:url value="/jsp/offers.jsp" />">Offers</a>
+            <a class="nav-link" href="<c:url value="/jsp/offers.jsp" />"><fmt:message key="link.offers" bundle="${rb}"/></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="<c:url value="/jsp/deliveries.jsp" />">Deliveries</a>
+            <a class="nav-link" href="<c:url value="/jsp/deliveries.jsp" />"><fmt:message key="link.deliveries" bundle="${rb}"/></a>
           </li>
         </ul>
         <ul class="navbar-nav">
@@ -50,7 +53,7 @@
             <a class="nav-link" href="<c:url value="/controller?command=set_locale&lang=${pageScope.langControl}&page=${pageContext.request.servletPath}" />">${pageScope.langView}</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="<c:url value="/controller?command=logout" />">Logout</a>
+            <a class="nav-link" href="<c:url value="/controller?command=logout" />"><fmt:message key="link.logout" bundle="${rb}"/></a>
           </li>
         </ul>
         <!-- Links -->
