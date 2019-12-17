@@ -76,7 +76,7 @@ public class CommandFactory {
         failurePages[CommandEnum.GET_COURIERS.ordinal()] = ConfigurationProvider.getProperty(ERROR_PAGE_PATH);
 
         successPages[CommandEnum.REQUEST_DELIVERY.ordinal()] = ConfigurationProvider.getProperty(PROFILE_PAGE_PATH);
-        failurePages[CommandEnum.REQUEST_DELIVERY.ordinal()] = ConfigurationProvider.getProperty(OFFERS_PAGE_PATH);
+        failurePages[CommandEnum.REQUEST_DELIVERY.ordinal()] = "/controller?command=get_offers";
 
         /*Feed back command*/
         failurePages[CommandEnum.FINISH_DELIVERY.ordinal()] = ConfigurationProvider.getProperty(DELIVERIES_PAGE_PATH);

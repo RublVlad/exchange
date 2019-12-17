@@ -55,6 +55,7 @@
                             ${requestScope.error_string}
                     </div>
                 </c:if>
+
                 <c:if test="${requestScope.invalid_data}">
                     <div class="alert alert-danger alert-dismissible fade show">
                         <fmt:message key="invalid_data" bundle="${glob}"/>

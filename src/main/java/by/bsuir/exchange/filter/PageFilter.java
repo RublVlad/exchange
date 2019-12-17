@@ -18,7 +18,6 @@ public class PageFilter implements Filter{
     private static final String EDIT_PROFILE_JSP = "/jsp/editProfile.jsp";
     private static final String REGISTER_JSP = "/jsp/register.jsp";
     private static final String LOGIN_JSP = "/jsp/login.jsp";
-    private static final String ERROR_JSP = "/jsp/error.jsp";
 
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) servletRequest;
@@ -56,7 +55,7 @@ public class PageFilter implements Filter{
                 break;
             }
             default:{
-                newServlet = ERROR_JSP;
+                newServlet = ConfigurationProvider.getProperty(ConfigurationProvider.ERROR_PAGE_PATH);
                 break;
             }
         }

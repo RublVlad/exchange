@@ -119,10 +119,13 @@ public class DeliveryManager extends AbstractManager<DeliveryBean> implements Co
         WalletBean wallet = (WalletBean) request.getAttribute(RequestAttributesNameProvider.WALLET_ATTRIBUTE);
         double clientBalance = wallet.getBalance();
 
-        boolean status = false;
+        boolean status;
         if (clientBalance > price){
             repository.add(delivery);
             status = true;
+        }else{
+            request.setAttribute(RequestAttributesNameProvider.ERROR_STRING, "You do not have enough money.");
+            status = false;
         }
         return status;
     }

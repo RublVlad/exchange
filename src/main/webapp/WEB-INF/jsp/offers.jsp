@@ -19,8 +19,17 @@
 <jsp:include page="template/header.jsp" />
 <main class="mt-5 pb-5" >
   <div class="container">
+    <c:if test="${not empty requestScope.error_string}">
+      <div class="row d-flex justify-content-center">
+        <div class="alert alert-danger alert-dismissible fade show">
+            ${requestScope.error_string}
+        </div>
+      </div>
+    </c:if>
+
     <!--Grid row-->
     <div class="row">
+
       <!--Grid column-->
       <c:forEach var="elem" items="${requestScope.offer_list}" varStatus="status">
         <c:choose>
