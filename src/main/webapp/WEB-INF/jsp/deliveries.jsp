@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="ctg" uri="/WEB-INF/tld/custom.tld" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE html>
 <fmt:setLocale value="${sessionScope.lang}"/>
@@ -47,14 +48,6 @@
             <c:set var="check" value="${requestScope.delivery_list[status.index].clientFinished}" scope="page" />
           </c:otherwise>
         </c:choose>
-        <c:choose>
-          <c:when test="${check}" >
-            <c:set var="btnAttr" value="disabled" scope="page" />
-          </c:when>
-          <c:otherwise>
-            <c:set var="btnAttr" value="" scope="page" />
-          </c:otherwise>
-        </c:choose>
 
         <div class="col-lg-4 col-md-6 mb-4">
           <!--Card-->
@@ -74,7 +67,7 @@
               <!--Title-->
               <h4 class="card-title"><span>${elem.name}</span> <span>${elem.surname}</span></h4>
               <!--Text-->
-              <a href="<c:url value="/controller?${pageScope.command}&${pageScope.otherId}=${elem.id}"/>" class="btn btn-indigo ${btnAttr}">Finish delivery</a>
+              <a href="<c:url value="/controller?${pageScope.command}&${pageScope.otherId}=${elem.id}"/>" class="btn btn-indigo <ctg:attrOnCond attribute="disabled" condition="${pageScope.check}" />" >Finish delivery</a>
             </div>
           </div>
           <!--/.Card-->
