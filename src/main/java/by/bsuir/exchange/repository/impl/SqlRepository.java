@@ -11,8 +11,8 @@ import by.bsuir.exchange.repository.Repository;
 import by.bsuir.exchange.repository.exception.RepositoryInitializationException;
 import by.bsuir.exchange.repository.exception.RepositoryOperationException;
 import by.bsuir.exchange.specification.Specification;
-import by.bsuir.exchange.tag.RepositoryTagEnum;
-import by.bsuir.exchange.tag.Tagable;
+import by.bsuir.exchange.tagable.RepositoryTagEnum;
+import by.bsuir.exchange.tagable.Tagable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

@@ -1,4 +1,4 @@
-package by.bsuir.exchange.tag;
+package by.bsuir.exchange.tagable;
 
 public enum ManagerTagEnum {
     ACTOR_MANAGER, DELIVERY__MANAGER, USER_MANAGER,

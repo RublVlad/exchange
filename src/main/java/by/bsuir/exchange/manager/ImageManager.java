@@ -5,7 +5,6 @@ import by.bsuir.exchange.bean.ImageBean;
 import by.bsuir.exchange.bean.UserBean;
 import by.bsuir.exchange.chain.CommandHandler;
 import by.bsuir.exchange.command.CommandEnum;
-import by.bsuir.exchange.entity.RoleEnum;
 import by.bsuir.exchange.manager.exception.ManagerInitializationException;
 import by.bsuir.exchange.manager.exception.ManagerOperationException;
 import by.bsuir.exchange.provider.RequestAttributesNameProvider;
@@ -14,8 +13,7 @@ import by.bsuir.exchange.repository.exception.RepositoryOperationException;
 import by.bsuir.exchange.repository.impl.ImageSqlRepository;
 import by.bsuir.exchange.specification.Specification;
 import by.bsuir.exchange.specification.image.ImageByRoleIdSpecification;
-import by.bsuir.exchange.tag.ManagerTagEnum;
-import by.bsuir.exchange.tag.RepositoryTagEnum;
+import by.bsuir.exchange.tagable.ManagerTagEnum;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Connection;

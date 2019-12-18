@@ -3,7 +3,6 @@ package by.bsuir.exchange.manager;
 import by.bsuir.exchange.bean.ActorBean;
 import by.bsuir.exchange.bean.DeliveryBean;
 import by.bsuir.exchange.bean.OfferBean;
-import by.bsuir.exchange.bean.UserBean;
 import by.bsuir.exchange.chain.CommandHandler;
 import by.bsuir.exchange.command.CommandEnum;
 import by.bsuir.exchange.entity.RoleEnum;
@@ -17,8 +16,7 @@ import by.bsuir.exchange.repository.impl.OfferSqlRepository;
 import by.bsuir.exchange.specification.Specification;
 import by.bsuir.exchange.specification.offer.OfferAllSpecification;
 import by.bsuir.exchange.specification.offer.OfferByCourierIdSpecification;
-import by.bsuir.exchange.tag.ManagerTagEnum;
-import by.bsuir.exchange.tag.RepositoryTagEnum;
+import by.bsuir.exchange.tagable.ManagerTagEnum;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;

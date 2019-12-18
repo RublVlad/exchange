@@ -1,4 +1,4 @@
-package by.bsuir.exchange.tag;
+package by.bsuir.exchange.tagable;
 
 public enum RepositoryTagEnum {
     ACTOR_REPOSITORY, DELIVERY_REPOSITORY, IMAGE__REPOSITORY,

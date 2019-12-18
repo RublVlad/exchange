@@ -15,8 +15,7 @@ import by.bsuir.exchange.specification.Specification;
 import by.bsuir.exchange.specification.user.UserAllSpecification;
 import by.bsuir.exchange.specification.user.UserByEmailSqlSpecification;
 import by.bsuir.exchange.specification.user.UserByIdSpecification;
-import by.bsuir.exchange.tag.ManagerTagEnum;
-import by.bsuir.exchange.tag.RepositoryTagEnum;
+import by.bsuir.exchange.tagable.ManagerTagEnum;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;

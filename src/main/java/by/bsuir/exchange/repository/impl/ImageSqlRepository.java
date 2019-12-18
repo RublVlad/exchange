@@ -4,7 +4,7 @@ import by.bsuir.exchange.bean.ImageBean;
 import by.bsuir.exchange.pool.ConnectionPool;
 import by.bsuir.exchange.provider.DataBaseAttributesProvider;
 import by.bsuir.exchange.repository.exception.RepositoryInitializationException;
-import by.bsuir.exchange.tag.RepositoryTagEnum;
+import by.bsuir.exchange.tagable.RepositoryTagEnum;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

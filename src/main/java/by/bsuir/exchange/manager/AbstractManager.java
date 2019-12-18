@@ -9,8 +9,8 @@ import by.bsuir.exchange.provider.SessionAttributesNameProvider;
 import by.bsuir.exchange.repository.exception.RepositoryInitializationException;
 import by.bsuir.exchange.repository.exception.RepositoryOperationException;
 import by.bsuir.exchange.repository.impl.SqlRepository;
-import by.bsuir.exchange.tag.ManagerTagEnum;
-import by.bsuir.exchange.tag.Tagable;
+import by.bsuir.exchange.tagable.ManagerTagEnum;
+import by.bsuir.exchange.tagable.Tagable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

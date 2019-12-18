@@ -13,7 +13,7 @@ import by.bsuir.exchange.repository.factory.ActorSqlRepositoryFactory;
 import by.bsuir.exchange.specification.Specification;
 import by.bsuir.exchange.specification.actor.factory.ActorIdSqlSpecificationFactory;
 import by.bsuir.exchange.specification.actor.factory.ActorUserIdSqlSpecificationFactory;
-import by.bsuir.exchange.tag.ManagerTagEnum;
+import by.bsuir.exchange.tagable.ManagerTagEnum;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;

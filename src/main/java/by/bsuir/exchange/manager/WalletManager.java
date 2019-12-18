@@ -13,7 +13,7 @@ import by.bsuir.exchange.repository.exception.RepositoryOperationException;
 import by.bsuir.exchange.repository.factory.WalletSqlRepositoryFactory;
 import by.bsuir.exchange.specification.Specification;
 import by.bsuir.exchange.specification.wallet.WalletIdSqlSpecificationFactory;
-import by.bsuir.exchange.tag.ManagerTagEnum;
+import by.bsuir.exchange.tagable.ManagerTagEnum;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;

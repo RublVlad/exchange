@@ -13,7 +13,7 @@ import by.bsuir.exchange.repository.exception.RepositoryOperationException;
 import by.bsuir.exchange.repository.impl.RelationSqlRepository;
 import by.bsuir.exchange.specification.Specification;
 import by.bsuir.exchange.specification.relation.RelationByActorIdSpecification;
-import by.bsuir.exchange.tag.ManagerTagEnum;
+import by.bsuir.exchange.tagable.ManagerTagEnum;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;

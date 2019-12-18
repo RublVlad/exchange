@@ -15,8 +15,7 @@ import by.bsuir.exchange.specification.Specification;
 import by.bsuir.exchange.specification.delivery.DeliveryByActorIdSpecification;
 import by.bsuir.exchange.specification.delivery.DeliveryByClientIdSpecification;
 import by.bsuir.exchange.specification.delivery.DeliveryByCourierIdSpecification;
-import by.bsuir.exchange.tag.ManagerTagEnum;
-import by.bsuir.exchange.tag.RepositoryTagEnum;
+import by.bsuir.exchange.tagable.ManagerTagEnum;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;

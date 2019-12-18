@@ -2,14 +2,9 @@ package by.bsuir.exchange.repository.impl;
 
 import by.bsuir.exchange.bean.DeliveryBean;
 import by.bsuir.exchange.pool.ConnectionPool;
-import by.bsuir.exchange.pool.GlobalConnectionPool;
-import by.bsuir.exchange.pool.exception.PoolInitializationException;
-import by.bsuir.exchange.pool.exception.PoolOperationException;
-import by.bsuir.exchange.pool.exception.PoolTimeoutException;
 import by.bsuir.exchange.provider.DataBaseAttributesProvider;
 import by.bsuir.exchange.repository.exception.RepositoryInitializationException;
-import by.bsuir.exchange.repository.exception.RepositoryOperationException;
-import by.bsuir.exchange.tag.RepositoryTagEnum;
+import by.bsuir.exchange.tagable.RepositoryTagEnum;
 
 import java.sql.*;
 import java.util.LinkedList;
