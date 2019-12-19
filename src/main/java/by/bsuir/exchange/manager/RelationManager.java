@@ -23,6 +23,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The class RelationManager is used to manage state of persistence object holding
+ * relations' state in response to the commands.
+ */
 public class RelationManager extends AbstractManager<RelationBean> {
 
     public RelationManager() throws ManagerInitializationException {

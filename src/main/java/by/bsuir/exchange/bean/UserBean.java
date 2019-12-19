@@ -2,6 +2,11 @@ package by.bsuir.exchange.bean;
 
 import by.bsuir.exchange.entity.RoleEnum;
 
+/**
+ * The class UserBean is used to provide access to fields of a user object,
+ * which is used for authentication.
+ * It has a corresponding table in the database.
+ */
 public class UserBean implements Markable{
     private long id;
     private String email;

@@ -19,14 +19,36 @@ import javax.servlet.http.HttpSession;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+/**
+ * The realizations of AbstractManager do actual processing of commands.
+ */
 public abstract class AbstractManager<T extends Markable> implements CommandHandler, Tagable {
+    /**
+     * The Tag.
+     * This field is used for logging.
+     */
     ManagerTagEnum tag;
+    /**
+     * The Repository.
+     * Every manager has only one repository it operates on.
+     */
     SqlRepository<T> repository;
+    /**
+     * The Abstract managers.
+     * The collection is used when processing a transaction.
+     * Each of the manager in the collection is responsible for part of the transaction.
+     */
     LinkedList<AbstractManager> abstractManagers;
 
 
     public abstract boolean handle(HttpServletRequest request, CommandEnum command) throws ManagerOperationException;
 
+    /**
+     * Create transactional manager.
+     *
+     * @param manager The first manager in the transaction
+     * @return new AbstractManager which represent the first part of a transaction
+     */
     public static <T extends Markable> AbstractManager<T> createTransactionalManager(AbstractManager<T> manager){
         AbstractManager<T> transactional = new AbstractManager<>() {
             private static final String START_TRANSACTION_LOG_TEMPLATE =
@@ -92,6 +114,13 @@ public abstract class AbstractManager<T extends Markable> implements CommandHand
         return tag.toString();
     }
 
+    /**
+     * Combine abstract manager to execute each handle as a single transaction.
+     *
+     * @param other the next part of the transaction
+     * @return new abstract manager representing a transaction
+     * @throws ManagerOperationException if one of the managers in the transaction throws an execption
+     */
     public <T2 extends Markable> AbstractManager<T> combine(AbstractManager<T2> other) throws ManagerOperationException {
         try {
             repository.pack(other.repository);
@@ -105,6 +134,11 @@ public abstract class AbstractManager<T extends Markable> implements CommandHand
         return this;
     }
 
+    /**
+     * Close manager.
+     *
+     * @throws ManagerOperationException if the internal repository object fails to close
+     */
     public void closeManager() throws ManagerOperationException {
         try {
             repository.closeRepository();

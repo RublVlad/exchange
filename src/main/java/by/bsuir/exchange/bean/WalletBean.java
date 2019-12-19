@@ -1,5 +1,10 @@
 package by.bsuir.exchange.bean;
 
+/**
+ * The class WalletBean is used to represent state of actor's balance.
+ * It has a corresponding table in the database.
+ * It uses the same table in the database as the ActorBean does.
+ */
 public class WalletBean implements Markable{
     private long id;
     private double balance;

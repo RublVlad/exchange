@@ -37,7 +37,4 @@ public class ActorValidator {
         return likes >= 0;
     }
 
-    private static boolean validateBalance(double balance){
-        return balance >= 0 && balance <= 1_000_000;
-    }
 }

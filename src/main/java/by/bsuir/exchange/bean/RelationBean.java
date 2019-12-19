@@ -2,6 +2,11 @@ package by.bsuir.exchange.bean;
 
 import by.bsuir.exchange.entity.RelationEnum;
 
+/**
+ * The class RelationBean is used to represent state of a relation
+ * between courier and client.
+ * It has a corresponding table in the database.
+ */
 public class RelationBean implements Markable{
     private long id;
     private long clientId;

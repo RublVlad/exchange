@@ -1,5 +1,9 @@
 package by.bsuir.exchange.bean;
 
+/**
+ * The class OfferBean is used to represent an offer of a courier.
+ * It has a corresponding table in the database.
+ */
 public class OfferBean implements Markable{
     private long id;
     private String transport;

@@ -24,6 +24,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * The class PersonalManager is used to manage state of persistence object holding
+ * data about the wallet of actors in response to the commands.
+ */
 public class WalletManager extends AbstractManager<WalletBean> implements CommandHandler {
     private RoleEnum role;
 

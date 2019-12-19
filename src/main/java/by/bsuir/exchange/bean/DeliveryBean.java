@@ -1,5 +1,9 @@
 package by.bsuir.exchange.bean;
 
+/**
+ * The class DeliveryBean is used to represent state of a delivery.
+ * It has a corresponding table in the database.
+ */
 public class DeliveryBean implements Markable{
     private long id;
     private long clientId;

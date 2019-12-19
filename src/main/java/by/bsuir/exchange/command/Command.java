@@ -8,7 +8,6 @@ import by.bsuir.exchange.manager.exception.ManagerOperationException;
 import by.bsuir.exchange.provider.SessionAttributesNameProvider;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 public class Command {
@@ -26,7 +25,7 @@ public class Command {
         this.redirect = redirect;
     }
 
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws CommandOperationException {
+    public String execute(HttpServletRequest request) throws CommandOperationException {
         boolean success;
         try {
             success = handler.handle(request, tag);

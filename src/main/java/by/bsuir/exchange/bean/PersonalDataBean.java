@@ -1,5 +1,10 @@
 package by.bsuir.exchange.bean;
 
+/**
+ * The class PersonalDataBean was created to split actor entry in the database
+ * into multiple beans, to make validation of user input easier.
+ * It uses the same table in the database as the ActorBean does.
+ */
 public class PersonalDataBean implements Markable{
     public static final String DEFAULT = "NONE";
 

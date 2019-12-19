@@ -17,7 +17,7 @@ public class GlobalConnectionPool extends ConnectionPool {
 
     private static volatile GlobalConnectionPool INSTANCE;
     private static ReentrantLock instanceLock = new ReentrantLock();
-    private boolean isClosed;
+    private volatile boolean isClosed;
 
     private LinkedBlockingQueue<Connection> connections;
 

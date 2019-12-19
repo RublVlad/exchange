@@ -22,6 +22,10 @@ import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The class PersonalManager is used to manage state of persistence object holding
+ * personal data of actors in response to the commands.
+ */
 public class PersonalDataManager extends AbstractManager<PersonalDataBean> implements CommandHandler {
     private RoleEnum role;
 

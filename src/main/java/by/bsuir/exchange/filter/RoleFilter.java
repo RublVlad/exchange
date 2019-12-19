@@ -19,7 +19,7 @@ public class RoleFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) servletRequest;
         HttpSession session = req.getSession();
-        if (session.getAttribute(SessionAttributesNameProvider.ROLE) == null){        //FIXME should be only valid roles
+        if (session.getAttribute(SessionAttributesNameProvider.ROLE) == null){
             session.setAttribute(SessionAttributesNameProvider.ROLE, DEFAULT_ROLE);
             session.setAttribute(SessionAttributesNameProvider.ID, MOCK_ID);
         }

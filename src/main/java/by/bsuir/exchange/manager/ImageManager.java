@@ -21,6 +21,10 @@ import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The class DeliveryManager is used to manage state of persistence object holding
+ * image objects in response to the commands.
+ */
 public class ImageManager extends AbstractManager<ImageBean> implements CommandHandler {
 
     public ImageManager() throws ManagerInitializationException {

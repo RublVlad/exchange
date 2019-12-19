@@ -1,5 +1,10 @@
 package by.bsuir.exchange.bean;
 
+/**
+ * The class ImageBean is used to provide access to fields of an image object,
+ * which is used for managing profile images of the users.
+ * It has a corresponding table in the database.
+ */
 public class ImageBean implements Markable{
     private long id;
     private String role;

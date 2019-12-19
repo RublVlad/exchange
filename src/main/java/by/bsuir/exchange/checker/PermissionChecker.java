@@ -10,6 +10,9 @@ import java.util.Objects;
 
 import static by.bsuir.exchange.entity.PermissionEnum.*;
 
+/**
+ * The class Permission is a wrapper for PermissionEnum collections, which was created to ease the implementation.
+ */
 class Permission{
     private EnumSet<PermissionEnum> permissions;
 
@@ -33,7 +36,7 @@ class Permission{
     boolean granted(Permission other){
         boolean status = true;
         for (PermissionEnum permission : permissions){
-            if (!other.permissions.contains(permission) ){ //FIXME nullptr
+            if (!other.permissions.contains(permission) ){
                status = false;
                break;
             }
@@ -42,9 +45,12 @@ class Permission{
     }
 
 }
-
+/**
+ * The class PermissionChecker is used to check rights for performing an operation.
+ * It binds each command, role with resources' permissions of an exchange platform and compares them.
+ */
 public class PermissionChecker {
-    private final static int N_COMMANDS = 24;
+    private final static int N_COMMANDS = 25;
     private final static int N_RESOURCES = 9;
     private final static int N_ROLES = 4;
 
@@ -131,13 +137,11 @@ public class PermissionChecker {
         instance.commandCompetencies[i][ResourceEnum.CLIENT.ordinal()] = new Permission(sessionPermissions);
     }
 
-
     private static void addUpdateAvatarCourierCommandCompetencies() {
         int i = CommandEnum.UPDATE_AVATAR_COURIER.ordinal();
         EnumSet<PermissionEnum> sessionPermissions = EnumSet.of(UPDATE);
         instance.commandCompetencies[i][ResourceEnum.COURIER.ordinal()] = new Permission(sessionPermissions);
     }
-
 
     private static void addUpdateOfferCommandCompetencies() {
         int i = CommandEnum.UPDATE_OFFER.ordinal();
@@ -162,7 +166,6 @@ public class PermissionChecker {
         EnumSet<PermissionEnum> sessionPermissions = EnumSet.of(CREATE, UPDATE);
         instance.commandCompetencies[i][ResourceEnum.HTTP_SESSION.ordinal()] = new Permission(sessionPermissions);
     }
-
 
     private static void addLogoutCommandCompetencies() {
         int i = CommandEnum.LOGOUT.ordinal();
@@ -207,7 +210,6 @@ public class PermissionChecker {
         instance.commandCompetencies[i][ResourceEnum.RELATION.ordinal()] = new Permission(relationPermissions);
     }
 
-    /*Fixme admin creation*/
     private static void addGuestCompetencies(){
         int i = RoleEnum.GUEST.ordinal();
         EnumSet<PermissionEnum> sessionPermissions = EnumSet.of(CREATE, UPDATE);
@@ -250,7 +252,7 @@ public class PermissionChecker {
 
     private static void addAdminCompetencies(){
         int i = RoleEnum.ADMIN.ordinal();
-        EnumSet<PermissionEnum> userPermissions = EnumSet.of(READ, UPDATE, DELETE); //FIXME DELETE
+        EnumSet<PermissionEnum> userPermissions = EnumSet.of(READ, UPDATE, DELETE);
         instance.roleCompetencies[i][ResourceEnum.USER.ordinal()] = new Permission(userPermissions);
         EnumSet<PermissionEnum> sessionPermissions = EnumSet.of(DELETE);
         instance.roleCompetencies[i][ResourceEnum.HTTP_SESSION.ordinal()] = new Permission(sessionPermissions);

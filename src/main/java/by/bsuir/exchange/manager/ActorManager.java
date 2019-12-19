@@ -21,6 +21,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.*;
 
+/**
+ * The class ActorManager is used to manage state of persistence object holding
+ * actors' state in response to the commands.
+ */
 public class ActorManager extends AbstractManager<ActorBean>{
 
     private RoleEnum role;
@@ -139,7 +143,7 @@ public class ActorManager extends AbstractManager<ActorBean>{
                 if (optionalActors.isPresent()){
                     ActorBean actor = optionalActors.get().get(0);
                     actors.put(userId, actor);
-                }else{//FIXME logging
+                }else{
                     iterator.remove();
                 }
             }

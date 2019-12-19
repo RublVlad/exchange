@@ -12,7 +12,11 @@ import org.apache.logging.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-public class ChainFactory { //Loads on servlet initialization
+/**
+ * The class ChainFactory is used to generate queue of components to handle the command.
+ * The types of components are permission checker, bean creator, bean validator and manager.
+ */
+public class ChainFactory {
 
     /*Chains*/
     static CommandHandler emptyChain;

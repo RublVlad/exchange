@@ -25,6 +25,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The class DeliveryManager is used to manage state of persistence object holding
+ * deliveries' state in response to the commands.
+ */
 public class DeliveryManager extends AbstractManager<DeliveryBean> implements CommandHandler {
 
     public DeliveryManager() throws ManagerInitializationException {

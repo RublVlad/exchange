@@ -1,5 +1,9 @@
 package by.bsuir.exchange.bean;
 
+/**
+ * The class ActorBean is used to represent state of an actor entity.
+ * It has a corresponding table in the database.
+ */
 public class ActorBean implements Markable{
     private long id;
     private String name;

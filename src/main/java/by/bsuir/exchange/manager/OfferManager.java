@@ -26,6 +26,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The class OfferManager is used to manage state of persistence object holding
+ * offers' state in response to the commands.
+ */
 public class OfferManager extends AbstractManager<OfferBean> implements CommandHandler {
 
     public OfferManager() throws ManagerInitializationException {

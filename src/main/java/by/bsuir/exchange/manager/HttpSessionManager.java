@@ -25,6 +25,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The class UserManager is used to manage state of persistence object holding
+ * users' state in response to the commands.
+ */
 public class HttpSessionManager extends AbstractManager<UserBean> implements CommandHandler {
     private static final String DUPLICATE_EMAIL_ERROR = "User with the same email already exists.";
     private static final String INVALID_CREDENTIALS_ERROR = "Invalid email or password.";
