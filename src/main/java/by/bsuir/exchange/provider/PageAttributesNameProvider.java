@@ -9,6 +9,4 @@ public class PageAttributesNameProvider {
     public static final String AVATAR = "avatar";
 
     public static final String USER_ATTRIBUTE = "user";
-    public static final String CLIENT_ATTRIBUTE = "client";
-    public static final String COURIER_ATTRIBUTE = "courier";
 }

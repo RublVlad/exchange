@@ -32,7 +32,7 @@ public class DataBaseAttributesProvider {
     public static final String CITY = "CITY";
     public static final String AGE = "AGE";
 
-    public static final String COURIER_TABLE = "courier"; //FIXME
+    public static final String COURIER_TABLE = "courier";
     public static final String BALANCE = "BALANCE";
     public static final String LIKES = "LIKES";
 
@@ -54,7 +54,7 @@ public class DataBaseAttributesProvider {
     public static final String RELATION_TABLE = "relations";
     public static final String RELATION = "RELATION";
 
-    //FIXME why one should do this???
+
     static {
         usersColumns.put(ID, "id");
         usersColumns.put(EMAIL, "email");

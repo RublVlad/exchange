@@ -1,5 +1,5 @@
 package by.bsuir.exchange.provider;
-//FIXME
+
 public class RequestAttributesNameProvider {
     public static final String USER_ATTRIBUTE = "user";
     public static final String ACTOR_ATTRIBUTE = "actor";

@@ -3,7 +3,7 @@ package by.bsuir.exchange.provider;
 
 import java.util.ResourceBundle;
 
-public class ConfigurationProvider{ //FIXME redirect
+public class ConfigurationProvider{
     private static final String BUNDLE_NAME = "config";
     private static final ResourceBundle resourceBundle = ResourceBundle.getBundle(BUNDLE_NAME);
     public static final String LOGIN_PAGE_PATH = "LOGIN_PAGE_PATH";
