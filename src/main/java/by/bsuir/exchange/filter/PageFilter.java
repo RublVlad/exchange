@@ -62,6 +62,5 @@ public class PageFilter implements Filter{
         RequestDispatcher dispatcher = servletRequest.getServletContext()
                 .getRequestDispatcher(newServlet);
         dispatcher.forward(req, resp);
-        filterChain.doFilter(servletRequest, servletResponse);
     }
 }
