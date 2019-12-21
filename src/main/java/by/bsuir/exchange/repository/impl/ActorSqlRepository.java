@@ -85,6 +85,11 @@ public class ActorSqlRepository extends SqlRepository<ActorBean> {
     }
 
     @Override
+    public String getTableName() {
+        return role.toString().toLowerCase();
+    }
+
+    @Override
     public void populateAddStatement(ActorBean entity, PreparedStatement statement) throws SQLException {
         if (role == RoleEnum.CLIENT){
             populateClientInsert(statement, entity);

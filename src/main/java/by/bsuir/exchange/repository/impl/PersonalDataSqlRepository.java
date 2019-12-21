@@ -67,6 +67,11 @@ public class PersonalDataSqlRepository extends SqlRepository<PersonalDataBean>{
     }
 
     @Override
+    public String getTableName() {
+        return role.toString().toLowerCase();
+    }
+
+    @Override
     public void populateAddStatement(PersonalDataBean personalData, PreparedStatement statement) throws SQLException {
         throw new UnsupportedOperationException();
     }

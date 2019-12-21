@@ -72,6 +72,11 @@ public class OfferSqlRepository extends SqlRepository<OfferBean> {
     }
 
     @Override
+    public String getTableName() {
+        return "offers";
+    }
+
+    @Override
     public void populateAddStatement(OfferBean entity, PreparedStatement statement) throws SQLException {
         statement.setDouble(1, entity.getPrice());
         statement.setString(2, entity.getTransport());

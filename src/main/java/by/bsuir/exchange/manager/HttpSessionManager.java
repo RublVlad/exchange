@@ -1,11 +1,13 @@
 package by.bsuir.exchange.manager;
 
+import by.bsuir.exchange.bean.PageNavigationBean;
 import by.bsuir.exchange.bean.UserBean;
 import by.bsuir.exchange.chain.CommandHandler;
 import by.bsuir.exchange.command.CommandEnum;
 import by.bsuir.exchange.entity.RoleEnum;
 import by.bsuir.exchange.manager.exception.ManagerInitializationException;
 import by.bsuir.exchange.manager.exception.ManagerOperationException;
+import by.bsuir.exchange.provider.ConfigurationProvider;
 import by.bsuir.exchange.provider.RequestAttributesNameProvider;
 import by.bsuir.exchange.provider.SessionAttributesNameProvider;
 import by.bsuir.exchange.repository.exception.RepositoryInitializationException;
@@ -106,7 +108,13 @@ public class HttpSessionManager extends AbstractManager<UserBean> implements Com
     }
 
     private boolean getUsers(HttpServletRequest request) throws RepositoryOperationException {
-        Specification<UserBean, PreparedStatement, Connection> specification = new UserAllSpecification();
+        PageNavigationBean navigation = (PageNavigationBean) request.getAttribute(RequestAttributesNameProvider.NAVIGATION);
+        long factor = ConfigurationProvider.PAGINATION_FACTOR;
+        long repositorySize = repository.size() - 1;  /*Don't count admin*/
+        long offset = navigation.getOffset() * factor;
+        navigation.setHasNext(repositorySize - offset - factor > 0);
+        navigation.setHasPrevious(offset > 0);
+        Specification<UserBean, PreparedStatement, Connection> specification = new UserAllSpecification(offset);
         Optional< List<UserBean> > optionalUsers = repository.find(specification);
         List<UserBean> users = optionalUsers.orElse(Collections.emptyList());
         request.setAttribute(RequestAttributesNameProvider.USER_LIST, users);

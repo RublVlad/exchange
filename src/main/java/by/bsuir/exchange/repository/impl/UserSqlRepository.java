@@ -65,6 +65,11 @@ public class UserSqlRepository extends SqlRepository<UserBean> {
     }
 
     @Override
+    public String getTableName() {
+        return "users";
+    }
+
+    @Override
     public void populateAddStatement(UserBean user, PreparedStatement statement) throws SQLException {
         statement.setString(1, user.getEmail());
         statement.setString(2, user.getPassword());

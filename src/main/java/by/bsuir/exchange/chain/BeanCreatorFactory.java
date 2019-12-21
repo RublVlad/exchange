@@ -81,6 +81,14 @@ class BeanCreatorFactory {
                 };
                 break;
             }
+            case GET_USERS: {
+                creator = (request, command1) -> {
+                    PageNavigationBean navigation = new PageNavigationBean();
+                    CommandHandler handler = getCreator(navigation, RequestAttributesNameProvider.NAVIGATION);
+                    return handler.handle(request, command1);
+                };
+                break;
+            }
             default: creator = ChainFactory.emptyChain;
         }
         return creator;

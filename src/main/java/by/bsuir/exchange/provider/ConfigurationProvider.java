@@ -19,7 +19,8 @@ public class ConfigurationProvider{
     public static final String IMAGE_PATH = "IMAGE_PATH";
     public static final String IMAGE_SERVLET = "IMAGE_SERVLET";
     public static final String GET_IMAGE_PATH = "GET_IMAGE_PATH";
-    public static final String UPLOAD_IMAGE_PATH = "UPLOAD_IMAGE_PATH";
+
+    public static final int PAGINATION_FACTOR = 3;
 
     public static String getProperty(String name){
         return resourceBundle.getString(name);

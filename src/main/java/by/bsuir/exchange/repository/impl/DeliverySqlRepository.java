@@ -72,6 +72,11 @@ public class DeliverySqlRepository extends SqlRepository<DeliveryBean> {
     }
 
     @Override
+    public String getTableName() {
+        return "deliveries";
+    }
+
+    @Override
     public void populateAddStatement(DeliveryBean entity, PreparedStatement statement) throws SQLException {
         statement.setLong(1, entity.getClientId());
         statement.setBoolean(2, entity.getClientFinished());

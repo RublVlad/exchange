@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="ctg" uri="/WEB-INF/tld/custom.tld" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -91,6 +92,16 @@
             </c:forEach>
         </div>
         <!--Grid row-->
+        <nav>
+            <ul class="pagination pg-blue justify-content-center">
+                <li class="page-item <ctg:attrOnCond condition="${not requestScope.navigation.hasPrevious}" attribute="disabled"/>">
+                    <a class="page-link" href="<c:url value="controller?command=get_users&offset=${requestScope.navigation.offset - 1}" /> ">Previous</a>
+                </li>
+                <li class="page-item <ctg:attrOnCond condition="${not requestScope.navigation.hasNext}" attribute="disabled"/>">
+                    <a class="page-link" href="<c:url value="controller?command=get_users&offset=${requestScope.navigation.offset + 1}" /> ">Next</a>
+                </li>
+            </ul>
+        </nav>
     </div>
     <!--Main container-->
 </main>

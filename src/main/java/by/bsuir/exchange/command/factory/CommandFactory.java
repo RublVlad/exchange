@@ -15,7 +15,7 @@ import static by.bsuir.exchange.provider.ConfigurationProvider.*;
 import static by.bsuir.exchange.provider.PageAttributesNameProvider.COMMAND;
 
 public class CommandFactory {
-    private static final int N_COMMANDS = 24;
+    private static final int N_COMMANDS = 25;
     private static final String FEED_BACK_TEMPLATE = "/controller?command=%s";
 
     private static String[] successPages;

@@ -69,6 +69,11 @@ public class ImageSqlRepository extends SqlRepository<ImageBean> {
     }
 
     @Override
+    public String getTableName() {
+        return "images";
+    }
+
+    @Override
     public void populateAddStatement(ImageBean entity, PreparedStatement statement) throws SQLException {
         statement.setString(1, entity.getRole().toUpperCase());
         statement.setLong(2, entity.getRoleId());

@@ -64,6 +64,11 @@ public class RelationSqlRepository extends SqlRepository<RelationBean> {
     }
 
     @Override
+    public String getTableName() {
+        return "relations";
+    }
+
+    @Override
     public void populateAddStatement(RelationBean entity, PreparedStatement statement) throws SQLException {
         statement.setLong(1, entity.getClientId());
         statement.setLong(2, entity.getCourierId());

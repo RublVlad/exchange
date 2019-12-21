@@ -63,6 +63,11 @@ public class WalletSqlRepository extends SqlRepository<WalletBean>{
     }
 
     @Override
+    public String getTableName() {
+        return role.toString().toLowerCase();
+    }
+
+    @Override
     public void populateAddStatement(WalletBean wallet, PreparedStatement statement) throws SQLException {
         throw new UnsupportedOperationException();
     }

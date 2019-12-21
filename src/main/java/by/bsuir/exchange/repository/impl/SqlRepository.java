@@ -104,6 +104,7 @@ public abstract class SqlRepository<T extends Markable> implements Repository<T,
 
     public abstract Optional< List<T> > process(ResultSet resultSet) throws SQLException;
     public abstract String getAddQuery();
+    public abstract String getTableName();
     public abstract void populateAddStatement(T entity, PreparedStatement statement) throws SQLException;
     public abstract String getUpdateQuery();
     public abstract void populateUpdateStatement(T entity, PreparedStatement statement) throws SQLException;
@@ -192,7 +193,22 @@ public abstract class SqlRepository<T extends Markable> implements Repository<T,
         }
     }
 
-
+    public long size() throws RepositoryOperationException {
+        long total;
+        try{
+            Connection connection = pool.getConnection();
+            String tableName = getTableName();
+            Statement statement = connection.createStatement();
+            String template = "SELECT COUNT(*) AS total FROM %s WHERE archival = 0";
+            String query = String.format(template, tableName);
+            ResultSet resultSet = statement.executeQuery(query);
+            resultSet.next();
+            total = resultSet.getLong("total");
+        }catch (PoolTimeoutException | SQLException | PoolOperationException e) {
+            throw new RepositoryOperationException(e);
+        }
+        return total;
+    }
 
     public void startTransaction() throws RepositoryOperationException {
         try {
