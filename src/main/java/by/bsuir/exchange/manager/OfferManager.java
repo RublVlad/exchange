@@ -3,11 +3,13 @@ package by.bsuir.exchange.manager;
 import by.bsuir.exchange.bean.ActorBean;
 import by.bsuir.exchange.bean.DeliveryBean;
 import by.bsuir.exchange.bean.OfferBean;
+import by.bsuir.exchange.bean.PageNavigationBean;
 import by.bsuir.exchange.chain.CommandHandler;
 import by.bsuir.exchange.command.CommandEnum;
 import by.bsuir.exchange.entity.RoleEnum;
 import by.bsuir.exchange.manager.exception.ManagerInitializationException;
 import by.bsuir.exchange.manager.exception.ManagerOperationException;
+import by.bsuir.exchange.provider.ConfigurationProvider;
 import by.bsuir.exchange.provider.RequestAttributesNameProvider;
 import by.bsuir.exchange.provider.SessionAttributesNameProvider;
 import by.bsuir.exchange.repository.exception.RepositoryInitializationException;
@@ -134,7 +136,14 @@ public class OfferManager extends AbstractManager<OfferBean> implements CommandH
             long id = (long) session.getAttribute(SessionAttributesNameProvider.ID);
             specification = new OfferByCourierIdSpecification(id);
         }else{
-            specification = new OfferAllSpecification();
+            PageNavigationBean navigation = (PageNavigationBean) request.getAttribute(RequestAttributesNameProvider.NAVIGATION);
+            long factor = ConfigurationProvider.PAGINATION_FACTOR;
+            long repositorySize = repository.size();
+            long offset = navigation.getOffset() * factor;
+            navigation.setHasNext(repositorySize - offset - factor > 0);
+            navigation.setHasPrevious(offset > 0);
+            request.setAttribute(RequestAttributesNameProvider.NAVIGATION, navigation);
+            specification = new OfferAllSpecification(offset);
         }
         Optional< List<OfferBean> > optionalOffers = repository.find(specification);
         List<OfferBean> result = optionalOffers.orElse(Collections.emptyList());
