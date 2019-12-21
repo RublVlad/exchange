@@ -4,13 +4,13 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE html>
 <fmt:setLocale value="${sessionScope.lang}"/>
-<fmt:setBundle basename="register" var="rb" />
+<fmt:setBundle basename="deliveries" var="rb" />
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <title>Deliveries</title>
+  <title><fmt:message key="title" bundle="${rb}"/></title>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
   <jsp:include page="template/links.jsp" />
   <jsp:include page="template/scripts.jsp"/>
@@ -67,7 +67,7 @@
               <!--Title-->
               <h4 class="card-title"><span>${elem.name}</span> <span>${elem.surname}</span></h4>
               <!--Text-->
-              <a href="<c:url value="/controller?${pageScope.command}&${pageScope.otherId}=${elem.id}"/>" class="btn btn-indigo <ctg:attrOnCond attribute="disabled" condition="${pageScope.check}" />" >Finish delivery</a>
+              <a href="<c:url value="/controller?${pageScope.command}&${pageScope.otherId}=${elem.id}"/>" class="btn btn-indigo <ctg:attrOnCond attribute="disabled" condition="${pageScope.check}" />" ><fmt:message key="button" bundle="${rb}"/></a>
             </div>
           </div>
           <!--/.Card-->
@@ -76,8 +76,19 @@
       </c:forEach>
     </div>
     <!--Grid row-->
+    <nav>
+      <ul class="pagination pg-blue justify-content-center">
+        <li class="page-item <ctg:attrOnCond condition="${not requestScope.navigation.hasPrevious}" attribute="disabled"/>">
+          <a class="page-link" href="<c:url value="/controller?command=get_deliveries&offset=${requestScope.navigation.offset - 1}" /> ">Previous</a>
+        </li>
+        <li class="page-item <ctg:attrOnCond condition="${not requestScope.navigation.hasNext}" attribute="disabled"/>">
+          <a class="page-link" href="<c:url value="/controller?command=get_deliveries&offset=${requestScope.navigation.offset + 1}" /> ">Next</a>
+        </li>
+      </ul>
+    </nav>
   </div>
   <!--Main container-->
+
 </main>
 <!--Main layout-->
 <jsp:include page="template/footer.jsp" />

@@ -6,6 +6,7 @@ import by.bsuir.exchange.command.CommandEnum;
 import by.bsuir.exchange.entity.RoleEnum;
 import by.bsuir.exchange.manager.exception.ManagerInitializationException;
 import by.bsuir.exchange.manager.exception.ManagerOperationException;
+import by.bsuir.exchange.provider.ConfigurationProvider;
 import by.bsuir.exchange.provider.RequestAttributesNameProvider;
 import by.bsuir.exchange.provider.SessionAttributesNameProvider;
 import by.bsuir.exchange.repository.exception.RepositoryInitializationException;
@@ -98,9 +99,16 @@ public class DeliveryManager extends AbstractManager<DeliveryBean> implements Co
         HttpSession session = request.getSession();
         RoleEnum role = (RoleEnum) session.getAttribute(SessionAttributesNameProvider.ROLE);
         long id = (long) session.getAttribute(SessionAttributesNameProvider.ID);
+        PageNavigationBean navigation = (PageNavigationBean) request.getAttribute(RequestAttributesNameProvider.NAVIGATION);
+        long factor = ConfigurationProvider.PAGINATION_FACTOR;
+        long repositorySize = repository.size();
+        long offset = navigation.getOffset() * factor;
+        navigation.setHasNext(repositorySize - offset - factor > 0);
+        navigation.setHasPrevious(offset > 0);
+        request.setAttribute(RequestAttributesNameProvider.NAVIGATION, navigation);
         Specification<DeliveryBean, PreparedStatement, Connection> specification = role == RoleEnum.CLIENT ?
-                                                new DeliveryByClientIdSpecification(id) :
-                                                new DeliveryByCourierIdSpecification(id);
+                                                new DeliveryByClientIdSpecification(id, offset) :
+                                                new DeliveryByCourierIdSpecification(id, offset);
         List<DeliveryBean > deliveries = Collections.emptyList();
         Optional< List< DeliveryBean > > optionalDeliveries = repository.find(specification);
         if (optionalDeliveries.isPresent()){

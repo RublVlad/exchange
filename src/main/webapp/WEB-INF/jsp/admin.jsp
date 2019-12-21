@@ -95,10 +95,10 @@
         <nav>
             <ul class="pagination pg-blue justify-content-center">
                 <li class="page-item <ctg:attrOnCond condition="${not requestScope.navigation.hasPrevious}" attribute="disabled"/>">
-                    <a class="page-link" href="<c:url value="controller?command=get_users&offset=${requestScope.navigation.offset - 1}" /> ">Previous</a>
+                    <a class="page-link" href="<c:url value="/controller?command=get_users&offset=${requestScope.navigation.offset - 1}" /> ">Previous</a>
                 </li>
                 <li class="page-item <ctg:attrOnCond condition="${not requestScope.navigation.hasNext}" attribute="disabled"/>">
-                    <a class="page-link" href="<c:url value="controller?command=get_users&offset=${requestScope.navigation.offset + 1}" /> ">Next</a>
+                    <a class="page-link" href="<c:url value="/controller?command=get_users&offset=${requestScope.navigation.offset + 1}" /> ">Next</a>
                 </li>
             </ul>
         </nav>

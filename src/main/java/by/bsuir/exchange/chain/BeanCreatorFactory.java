@@ -81,6 +81,7 @@ class BeanCreatorFactory {
                 };
                 break;
             }
+            case GET_DELIVERIES:
             case GET_USERS: {
                 creator = (request, command1) -> {
                     PageNavigationBean navigation = new PageNavigationBean();

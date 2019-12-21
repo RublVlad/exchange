@@ -114,6 +114,7 @@ public class HttpSessionManager extends AbstractManager<UserBean> implements Com
         long offset = navigation.getOffset() * factor;
         navigation.setHasNext(repositorySize - offset - factor > 0);
         navigation.setHasPrevious(offset > 0);
+        request.setAttribute(RequestAttributesNameProvider.NAVIGATION, navigation);
         Specification<UserBean, PreparedStatement, Connection> specification = new UserAllSpecification(offset);
         Optional< List<UserBean> > optionalUsers = repository.find(specification);
         List<UserBean> users = optionalUsers.orElse(Collections.emptyList());
