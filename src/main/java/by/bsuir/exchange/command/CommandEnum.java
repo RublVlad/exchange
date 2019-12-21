@@ -17,7 +17,6 @@ public enum CommandEnum {
     GET_PROFILE,
     GET_PROFILE_CLIENT,
     GET_PROFILE_COURIER,
-    GET_COURIERS,
     GET_OFFERS,
     GET_DELIVERIES,
     GET_IMAGE,

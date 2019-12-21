@@ -83,10 +83,6 @@ class ManagerFactory {
                 manager = actorBranch.chain(walletBranch).chain(dataBranch);
                 break;
             }
-            case GET_COURIERS: {
-                manager = courierManager;
-                break;
-            }
             case GET_OFFERS: {
                 manager = offerManager.chain(courierManager).chain(relationManager);
                 break;

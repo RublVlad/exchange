@@ -71,7 +71,6 @@ public class PermissionChecker {
             addRegisterCommandCompetencies();
             addGetUsersCommandCompetencies();
             addDeleteUserCommandCompetencies();
-            addGetCourierCommandCompetencies();
             addGetOffersCommandCompetencies();
             addUpdateProfileClientCommandCompetencies();
             addUpdateProfileCourierCommandCompetencies();
@@ -173,17 +172,10 @@ public class PermissionChecker {
         instance.commandCompetencies[i][ResourceEnum.HTTP_SESSION.ordinal()] = new Permission(sessionPermissions);
     }
 
-
     private static void addRegisterCommandCompetencies() {
         int i = CommandEnum.REGISTER.ordinal();
         EnumSet<PermissionEnum> userPermissions = EnumSet.of(CREATE, UPDATE);
         instance.commandCompetencies[i][ResourceEnum.USER.ordinal()] = new Permission(userPermissions);
-    }
-
-    private static void addGetCourierCommandCompetencies(){
-        int i = CommandEnum.GET_COURIERS.ordinal();
-        EnumSet<PermissionEnum> courierPermissions = EnumSet.of(READ);
-        instance.commandCompetencies[i][ResourceEnum.COURIER.ordinal()] = new Permission(courierPermissions);
     }
 
     private static void addGetOffersCommandCompetencies(){
