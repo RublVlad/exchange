@@ -101,18 +101,24 @@ public class DeliveryManager extends AbstractManager<DeliveryBean> implements Co
         long id = (long) session.getAttribute(SessionAttributesNameProvider.ID);
         PageNavigationBean navigation = (PageNavigationBean) request.getAttribute(RequestAttributesNameProvider.NAVIGATION);
         long factor = ConfigurationProvider.PAGINATION_FACTOR;
-        long repositorySize = repository.size();
-        long offset = navigation.getOffset() * factor;
-        navigation.setHasNext(repositorySize - offset - factor > 0);
-        navigation.setHasPrevious(offset > 0);
-        request.setAttribute(RequestAttributesNameProvider.NAVIGATION, navigation);
-        Specification<DeliveryBean, PreparedStatement, Connection> specification = role == RoleEnum.CLIENT ?
-                                                new DeliveryByClientIdSpecification(id, offset) :
-                                                new DeliveryByCourierIdSpecification(id, offset);
+        Specification<DeliveryBean, PreparedStatement, Connection> countSpecification = role == RoleEnum.CLIENT ?
+                new DeliveryByClientIdSpecification(id) :
+                new DeliveryByCourierIdSpecification(id);
+        Optional< List< DeliveryBean > > optionalList = repository.find(countSpecification);
         List<DeliveryBean > deliveries = Collections.emptyList();
-        Optional< List< DeliveryBean > > optionalDeliveries = repository.find(specification);
-        if (optionalDeliveries.isPresent()){
-            deliveries = optionalDeliveries.get();
+        if (optionalList.isPresent()){
+            long size = optionalList.get().size();
+            long offset = navigation.getOffset() * factor;
+            navigation.setHasNext(size - offset - factor > 0);
+            navigation.setHasPrevious(offset > 0);
+            request.setAttribute(RequestAttributesNameProvider.NAVIGATION, navigation);
+            Specification<DeliveryBean, PreparedStatement, Connection> specification = role == RoleEnum.CLIENT ?
+                    new DeliveryByClientIdSpecification(id, offset) :
+                    new DeliveryByCourierIdSpecification(id, offset);
+            Optional< List< DeliveryBean > > optionalDeliveries = repository.find(specification);
+            if (optionalDeliveries.isPresent()){
+                deliveries = optionalDeliveries.get();
+            }
         }
         request.setAttribute(RequestAttributesNameProvider.DELIVERY_LIST_ATTRIBUTE, deliveries);
         return true;
