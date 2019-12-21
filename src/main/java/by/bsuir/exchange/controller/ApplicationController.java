@@ -17,8 +17,8 @@ import java.io.IOException;
 
 @MultipartConfig
 @WebServlet(urlPatterns = "/controller")
-public class Controller extends HttpServlet implements Servlet {
-    public Controller(){
+public class ApplicationController extends HttpServlet implements Servlet {
+    public ApplicationController(){
         super();
     }
 

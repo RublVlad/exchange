@@ -274,6 +274,7 @@ public class PermissionChecker {
         if (command == CommandEnum.GET_PROFILE){
             command = role == RoleEnum.CLIENT? CommandEnum.GET_PROFILE_CLIENT : CommandEnum.GET_PROFILE_COURIER;
         }
+
         int iCommand = command.ordinal();
         for (int j = 0; j < N_RESOURCES; j++){
             if (commandCompetencies[iCommand][j] == null){

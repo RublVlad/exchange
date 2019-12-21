@@ -96,7 +96,6 @@ public class CommandFactory {
         /*Feed back command*/
         failurePages[CommandEnum.DELETE_USER.ordinal()] = ConfigurationProvider.getProperty(ERROR_PAGE_PATH);
 
-
         failurePages[CommandEnum.LIKE_COURIER.ordinal()] = ConfigurationProvider.getProperty(OFFERS_PAGE_PATH);
 
     }
@@ -135,7 +134,6 @@ public class CommandFactory {
 
     private static boolean isRedirect(CommandEnum command) {
         return redirectCommand.contains(command);
-
     }
 
     private static boolean isSamePage(CommandEnum command){

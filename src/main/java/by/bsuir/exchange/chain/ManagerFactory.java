@@ -7,9 +7,12 @@ import by.bsuir.exchange.command.CommandEnum;
 import by.bsuir.exchange.entity.RoleEnum;
 import by.bsuir.exchange.manager.*;
 import by.bsuir.exchange.manager.exception.ManagerInitializationException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 class ManagerFactory {
     private static final int N_COMMANDS = 25;
+    private static Logger logger = LogManager.getRootLogger();
 
     private static CommandHandler registerTransaction;
     private static CommandHandler finishDeliveryTransaction;
@@ -37,6 +40,7 @@ class ManagerFactory {
             initTransactions();
             initHandlers();
         }catch (ManagerInitializationException e){
+            logger.fatal("Unable to initialize ManagerFactory");
             throw new RuntimeException(e);
         }
     }

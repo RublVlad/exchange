@@ -4,6 +4,8 @@ import by.bsuir.exchange.pool.exception.PoolDestructionException;
 import by.bsuir.exchange.pool.exception.PoolInitializationException;
 import by.bsuir.exchange.pool.exception.PoolTimeoutException;
 import by.bsuir.exchange.provider.DataBaseAttributesProvider;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.Driver;
@@ -17,6 +19,8 @@ public class GlobalConnectionPool extends ConnectionPool {
 
     private static volatile GlobalConnectionPool INSTANCE;
     private static ReentrantLock instanceLock = new ReentrantLock();
+    private static Logger logger = LogManager.getRootLogger();
+
     private volatile boolean isClosed;
 
     private LinkedBlockingQueue<Connection> connections;
@@ -28,6 +32,7 @@ public class GlobalConnectionPool extends ConnectionPool {
                 try {
                     INSTANCE = new GlobalConnectionPool();
                 } catch (SQLException e) {
+                    logger.fatal("Unable to initialize global connection pool");
                     throw new PoolInitializationException(e);
                 }
             }
@@ -79,6 +84,7 @@ public class GlobalConnectionPool extends ConnectionPool {
             }
         instanceLock.unlock();
         } catch (SQLException e) {
+            logger.fatal("Unable to close global connection pool");
             throw  new PoolDestructionException(e);
         }
     }
