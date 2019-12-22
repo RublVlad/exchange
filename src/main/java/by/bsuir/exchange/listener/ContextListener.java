@@ -1,5 +1,8 @@
 package by.bsuir.exchange.listener;
 
+import by.bsuir.exchange.pool.GlobalConnectionPool;
+import by.bsuir.exchange.pool.exception.PoolDestructionException;
+import by.bsuir.exchange.pool.exception.PoolInitializationException;
 import by.bsuir.exchange.provider.DataBaseAttributesProvider;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,15 +17,18 @@ import java.util.Enumeration;
 
 @WebListener
 public class ContextListener implements ServletContextListener {
+    private GlobalConnectionPool pool;
+    private Logger logger = LogManager.getRootLogger();
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         try {
             String driverName = DataBaseAttributesProvider.getProperty(DataBaseAttributesProvider.DRIVER_NAME);
             Class.forName(driverName);
-        } catch (ClassNotFoundException e) {
-            Logger logger = LogManager.getRootLogger();
-            logger.fatal("Unable to load a sql driver", e);
+            pool = GlobalConnectionPool.getInstance();
+        } catch (PoolInitializationException | ClassNotFoundException e) {
+            logger.fatal("Unable to create the global connection pool", e);
+            throw new RuntimeException(e);
         }
 
         try {
@@ -60,6 +66,12 @@ public class ContextListener implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
+        try {
+            pool.closePool();
+        } catch (PoolDestructionException e) {
+            logger.fatal("Unable to  close global connection pool", e);
+            throw new RuntimeException(e);
+        }
         Enumeration<Driver> drivers = DriverManager.getDrivers();
         while (drivers.hasMoreElements()) {
             Driver driver = drivers.nextElement();

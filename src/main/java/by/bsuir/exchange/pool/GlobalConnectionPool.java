@@ -74,9 +74,6 @@ public class GlobalConnectionPool extends ConnectionPool {
         instanceLock.lock();
         try{
             if (!isClosed){
-                String driverName = DataBaseAttributesProvider.getProperty(DataBaseAttributesProvider.DRIVER_NAME);
-                Driver driver = DriverManager.getDriver(driverName);
-                DriverManager.deregisterDriver(driver);
                 for (Connection connection : connections){
                     connection.close();
                 }
