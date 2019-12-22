@@ -36,56 +36,73 @@
 <jsp:include page="template/header.jsp" />
 <main class="mt-5 pb-5">
   <div class="container">
-    <!--Grid row-->
-    <div class="row">
-      <!--Grid column-->
-      <c:forEach var="elem" items="${pageScope.list}" varStatus="status">
-        <c:choose>
-          <c:when test="${pageScope.role == 'CLIENT'}" >
-            <c:set var="check" value="${requestScope.delivery_list[status.index].courierFinished}" scope="page" />
-          </c:when>
-          <c:otherwise>
-            <c:set var="check" value="${requestScope.delivery_list[status.index].clientFinished}" scope="page" />
-          </c:otherwise>
-        </c:choose>
+    <c:if test="${not empty requestScope.delivery_list}">
+      <!--Grid row-->
+      <div class="row">
+        <!--Grid column-->
+        <c:forEach var="elem" items="${pageScope.list}" varStatus="status">
+          <c:choose>
+            <c:when test="${pageScope.role == 'CLIENT'}" >
+              <c:set var="check" value="${requestScope.delivery_list[status.index].courierFinished}" scope="page" />
+            </c:when>
+            <c:otherwise>
+              <c:set var="check" value="${requestScope.delivery_list[status.index].clientFinished}" scope="page" />
+            </c:otherwise>
+          </c:choose>
 
-        <div class="col-lg-4 col-md-6 mb-4">
-          <!--Card-->
-          <div class="card">
-            <!--Card image-->
-            <div class="view overlay">
-              <div class="embed-responsive embed-responsive-4by3">
-                <img src="<c:url value="/images?role_id=${elem.id}&role=${pageScope.role}" />" class="card-img-top embed-responsive-item"
-                     alt="courier">
+          <div class="col-lg-4 col-md-6 mb-4">
+            <!--Card-->
+            <div class="card">
+              <!--Card image-->
+              <div class="view overlay">
+                <div class="embed-responsive embed-responsive-4by3">
+                  <img src="<c:url value="/images?role_id=${elem.id}&role=${pageScope.role}" />" class="card-img-top embed-responsive-item"
+                       alt="courier">
+                </div>
+                <a href="${check}">
+                  <div class="mask rgba-white-slight"></div>
+                </a>
               </div>
-              <a href="${check}">
-                <div class="mask rgba-white-slight"></div>
-              </a>
+              <!--Card content-->
+              <div class="card-body">
+                <!--Title-->
+                <h4 class="card-title"><span>${elem.name}</span> <span>${elem.surname}</span></h4>
+                <!--Text-->
+                <a href="<c:url value="/controller?${pageScope.command}&${pageScope.otherId}=${elem.id}"/>" class="btn btn-indigo <ctg:attrOnCond attribute="disabled" condition="${pageScope.check}" />" ><fmt:message key="button" bundle="${rb}"/></a>
+              </div>
             </div>
-            <!--Card content-->
-            <div class="card-body">
-              <!--Title-->
-              <h4 class="card-title"><span>${elem.name}</span> <span>${elem.surname}</span></h4>
-              <!--Text-->
-              <a href="<c:url value="/controller?${pageScope.command}&${pageScope.otherId}=${elem.id}"/>" class="btn btn-indigo <ctg:attrOnCond attribute="disabled" condition="${pageScope.check}" />" ><fmt:message key="button" bundle="${rb}"/></a>
-            </div>
+            <!--/.Card-->
           </div>
-          <!--/.Card-->
+          <!--Grid column-->
+        </c:forEach>
+      </div>
+      <!--Grid row-->
+      <nav>
+        <ul class="pagination pg-blue justify-content-center">
+          <li class="page-item <ctg:attrOnCond condition="${not requestScope.navigation.hasPrevious}" attribute="disabled"/>">
+            <a class="page-link" href="<c:url value="/controller?command=get_deliveries&offset=${requestScope.navigation.offset - 1}" /> ">Previous</a>
+          </li>
+          <li class="page-item <ctg:attrOnCond condition="${not requestScope.navigation.hasNext}" attribute="disabled"/>">
+            <a class="page-link" href="<c:url value="/controller?command=get_deliveries&offset=${requestScope.navigation.offset + 1}" /> ">Next</a>
+          </li>
+        </ul>
+      </nav>
+    </c:if>
+
+    <c:if test="${empty requestScope.delivery_list}">
+      <div class="row d-flex justify-content-center">
+        <!--Grid column-->
+        <div class="col-md-6">
+          <div class="text-center">
+            <p><fmt:message key="missing_deliveries" bundle="${rb}"/></p>
+          </div>
         </div>
         <!--Grid column-->
-      </c:forEach>
-    </div>
-    <!--Grid row-->
-    <nav>
-      <ul class="pagination pg-blue justify-content-center">
-        <li class="page-item <ctg:attrOnCond condition="${not requestScope.navigation.hasPrevious}" attribute="disabled"/>">
-          <a class="page-link" href="<c:url value="/controller?command=get_deliveries&offset=${requestScope.navigation.offset - 1}" /> ">Previous</a>
-        </li>
-        <li class="page-item <ctg:attrOnCond condition="${not requestScope.navigation.hasNext}" attribute="disabled"/>">
-          <a class="page-link" href="<c:url value="/controller?command=get_deliveries&offset=${requestScope.navigation.offset + 1}" /> ">Next</a>
-        </li>
-      </ul>
-    </nav>
+      </div>
+      <!--Grid row-->
+    </c:if>
+
+
   </div>
   <!--Main container-->
 
