@@ -53,7 +53,7 @@
                                 <input type="text" class="form-control" name="city" placeholder="<fmt:message key="form.general.city" bundle="${rb}"/>" required>
                             </div>
                             <div class="col">
-                                <input type="text" class="form-control" name="age" placeholder="<fmt:message key="form.general.age" bundle="${rb}"/>" required>
+                                <input type="number" class="form-control" name="age" placeholder="<fmt:message key="form.general.age" bundle="${rb}"/>" required>
                             </div>
                         </div>
                         <button class="btn btn-info my-4 btn-block" type="submit"><fmt:message key="form.general.submit" bundle="${rb}"/></button>
